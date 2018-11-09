@@ -73,3 +73,24 @@ def get_user_interests(request):
     for interest in interests:
         result.append(interest.to_json())
     return JsonResponse(result)
+
+
+def get_user_events(request):
+    token = request.GET.get("token", None)
+    if token is None:
+        return JsonResponse({"error": "token is None"})
+
+    api = _get_api(token)
+    user_vk = api.users.get()
+    user_id = int(user_vk[0]["id"])
+
+    try:
+        user = models.User.objects.get(id=user_id)
+    except err.ObjectDoesNotExist:
+        return JsonResponse({"error": "user does not exist"})
+
+    events = user.userinterests_set.all()
+    result = []
+    for event in events:
+        result.append(event.to_json())
+    return JsonResponse(result)
