@@ -1,9 +1,16 @@
 import json
+import os
 from filelock import FileLock
 
 from mainapp import models
 
 INFINITY = 10**12
+HOME = os.environ['HOME']
+GRAPH_DIR = 'data'
+SUBCATEGORIES_GRAPH_FILE = 'subcategories_graph.json'
+EVENTS_GRAPH_FILE = 'events_graph.json'
+SUBCATEGORIES_GRAPH = os.path.join(HOME, GRAPH_DIR, SUBCATEGORIES_GRAPH_FILE)
+EVENTS_GRAPH = os.path.join(HOME, GRAPH_DIR, EVENTS_GRAPH_FILE)
 
 
 def read_file(file_path):
