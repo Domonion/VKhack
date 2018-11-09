@@ -1,6 +1,6 @@
 from django.db import models
 
-import siriusbackend.users.models as users
+import users.models as users
 
 
 class Organizer(models.Model):
