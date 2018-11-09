@@ -27,15 +27,39 @@ def get_user_info(request):
     if token is None:
         return JsonResponse({"error": "token is None"})
 
+    api = _get_api(token)
+    user_vk = api.users.get()
+    user_id = int(user_vk[0]["id"])
+
     try:
-        user = models.User.objects.get(id=token)
+        user = models.User.objects.get(id=user_id)
     except err.ObjectDoesNotExist:
         return JsonResponse({"error": "user does not exist"})
 
     user_json = user.to_json()
 
-    api = _get_api(token)
     user_json["first_name"] = api.users.get()[0]["first_name"]
     user_json["last_name"] = api.users.get()[0]["last_name"]
 
     return JsonResponse(user_json)
+
+
+def get_user_interests(request):
+    token = request.GET.get("token", None)
+    if token is None:
+        return JsonResponse({"error": "token is None"})
+
+    api = _get_api(token)
+    user_vk = api.users.get()
+    user_id = int(user_vk[0]["id"])
+
+    try:
+        user = models.User.objects.get(id=user_id)
+    except err.ObjectDoesNotExist:
+        return JsonResponse({"error": "user does not exist"})
+
+    interests = user.userinterests_set.all()
+    result = []
+    for interest in interests:
+        result.append(interest.to_json())
+    return JsonResponse(result)

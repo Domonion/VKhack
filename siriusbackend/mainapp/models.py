@@ -51,6 +51,12 @@ class UserInterests(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE, null=True)
 
+    def to_json(self):
+        if self.subcategory is None:
+            return self.category.name
+
+        return self.subcategory.name
+
 
 class Organizer(models.Model):
     is_person = models.BooleanField()
