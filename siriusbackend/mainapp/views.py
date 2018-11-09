@@ -1,3 +1,5 @@
+import json
+
 import vk
 
 from django.shortcuts import render
@@ -92,3 +94,28 @@ def get_user_events(request):
     for event in events:
         result.append(event.to_json())
     return JsonResponse(result)
+
+
+def register_user(request):
+    data = json.loads(request.body)
+    user = models.User(vk_id=int(data["vk_id"]))
+    user.save()
+
+    interests = data["interests"]
+    for interest in interests:
+        if isinstance(interest, list):
+            category = models.Category.objects.get(name=interest[0])
+            subcategory = models.Subcategory.objects.get(name=interest[1])
+        else:
+            category = models.Category.objects.get(name=interest)
+            subcategory = None
+
+        user_interest = models.UserInterests(user=user, category=category, subcategory=subcategory)
+        user_interest.save()
+
+    events = data["events"]
+    for event in events:
+        user_event = models.UserEvent(user=user, event_id=event)
+        user_event.save()
+
+    return JsonResponse("ok")
