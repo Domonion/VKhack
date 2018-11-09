@@ -16,6 +16,9 @@
     "react-scripts": "^1.1.5"
   },
   "dependencies": {
+    "@vkontakte/vkui-connect": "latest",
+    "react": "^16.6.1",
+    "react-dom": "^16.6.1",
     "react-vk": "^3.5.0"
   }
 }
