@@ -7,7 +7,7 @@ import django.core.exceptions as err
 from . import models
 
 
-def _get_api(token):
+def _get_api(token="ce3641fdce3641fdce3641fd4ece6ff12dcce36ce3641fd95d3ba5bcc826e6a2fcb58b5"):
     session = vk.Session(access_token=token)
     api = vk.API(session, v="5.87")
     return api
@@ -23,13 +23,14 @@ def get_all_categories(responce):
 
 
 def get_user_info(request):
-    token = request.GET.get("token", None)
-    if token is None:
-        return JsonResponse({"error": "token is None"})
+    # token = request.GET.get("token", None)
+    # if token is None:
+    #     return JsonResponse({"error": "token is None"})
 
-    api = _get_api(token)
-    user_vk = api.users.get()
-    user_id = int(user_vk[0]["id"])
+    api = _get_api()
+    # user_vk = api.users.get()
+    # user_id = int(user_vk[0]["id"])
+    user_id = int(request.GET.get("id"))
 
     try:
         user = models.User.objects.get(id=user_id)
@@ -55,13 +56,14 @@ def get_user_info(request):
 
 
 def get_user_interests(request):
-    token = request.GET.get("token", None)
-    if token is None:
-        return JsonResponse({"error": "token is None"})
+    # token = request.GET.get("token", None)
+    # if token is None:
+    #     return JsonResponse({"error": "token is None"})
 
-    api = _get_api(token)
-    user_vk = api.users.get()
-    user_id = int(user_vk[0]["id"])
+    api = _get_api()
+    # user_vk = api.users.get()
+    # user_id = int(user_vk[0]["id"])
+    user_id = int(request.GET.get("id"))
 
     try:
         user = models.User.objects.get(id=user_id)
@@ -76,13 +78,14 @@ def get_user_interests(request):
 
 
 def get_user_events(request):
-    token = request.GET.get("token", None)
-    if token is None:
-        return JsonResponse({"error": "token is None"})
+    # token = request.GET.get("token", None)
+    # if token is None:
+    #     return JsonResponse({"error": "token is None"})
 
-    api = _get_api(token)
-    user_vk = api.users.get()
-    user_id = int(user_vk[0]["id"])
+    api = _get_api()
+    # user_vk = api.users.get()
+    # user_id = int(user_vk[0]["id"])
+    user_id = int(request.GET.get("id"))
 
     try:
         user = models.User.objects.get(id=user_id)
