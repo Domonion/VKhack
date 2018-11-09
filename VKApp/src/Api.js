@@ -1,9 +1,12 @@
-import React from 'react';
-
 export default class Api {
+    static myInstance = null;
 
-    static helloWorld() {
-        return "Hello world!"
+    static getInstance() {
+        if (Api.myInstance == null) {
+            Api.myInstance = new Api();
+        }
+        return this.myInstance;
     }
 
+    
 }
