@@ -50,3 +50,8 @@ class Event(models.Model):
     contact_data = models.TextField()
 
     organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
+
+
+class UserEvent(models.Model):
+    user = models.ForeignKey(users.User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
