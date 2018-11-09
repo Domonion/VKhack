@@ -6,10 +6,18 @@ class User(models.Model):
     banned = models.BooleanField(default=False)
     spent_time = models.FloatField(default=0.0)
 
+    def to_json(self):
+        return {"vk_id": self.vk_id,
+                "banned": self.banned,
+                "spent_time": self.spent_time}
+
 
 class Achievement(models.Model):
     name = models.CharField(max_length=256)
     # picture
+
+    def to_json(self):
+        return {"name": self.name}
 
 
 class UserAchievement(models.Model):
@@ -23,6 +31,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def to_json(self):
+        return {"name": self.name}
+
 
 class Subcategory(models.Model):
     name = models.CharField(max_length=256)
@@ -30,6 +41,9 @@ class Subcategory(models.Model):
 
     def __str__(self):
         return self.name
+
+    def to_json(self):
+        return {"name": self.name}
 
 
 class UserInterests(models.Model):

@@ -22,4 +22,5 @@ from mainapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('get_all_categories/', mainapp.views.get_all_categories),
+    path('get_user_info/', mainapp.views.get_user_info),
 ]
