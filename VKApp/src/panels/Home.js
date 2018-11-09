@@ -2,9 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, ListItem, Button, Group, Div, Avatar, PanelHeader } from '@vkontakte/vkui';
 
+import Api from '../Api';
+
 const Home = props => (
 	<Panel id={props.id}>
 		<PanelHeader>Example</PanelHeader>
+		{Api.getInstance().getAccessToken().then(
+			function (token) {
+				return token;
+            }
+		)}
 		{props.fetchedUser &&
 		<Group title="User Data Fetched with VK Connect">
 			<ListItem
