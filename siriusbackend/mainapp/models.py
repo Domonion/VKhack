@@ -20,10 +20,16 @@ class UserAchievement(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=256)
 
+    def __str__(self):
+        return self.name
+
 
 class Subcategory(models.Model):
     name = models.CharField(max_length=256)
     parent = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class UserInterests(models.Model):
