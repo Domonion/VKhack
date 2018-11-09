@@ -3,6 +3,21 @@ from django.db import models
 import siriusbackend.users.models as users
 
 
+class Organizer(models.Model):
+    is_person = models.BooleanField()
+
+    full_name = models.CharField(max_length=512)
+
+    contact_data = models.TextField()
+    contact_email = models.EmailField()
+
+    description = models.TextField()
+
+    is_verificated = models.BooleanField(default=False)
+
+    # picture
+
+
 class Event(models.Model):
     SCHOOL_TYPE = 1
     CIRCLE_TYPE = 2
@@ -19,6 +34,7 @@ class Event(models.Model):
         (OTHER_TYPE, "Другое"),
         (ONLINE_COURSE_TYPE, "Онлайн-курсы"),
     ])
+    description = models.TextField()
 
     start_datetime = models.DateTimeField(null=True)
     finish_datetime = models.DateTimeField(null=True)
@@ -33,3 +49,4 @@ class Event(models.Model):
     contact_email = models.EmailField()
     contact_data = models.TextField()
 
+    organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
