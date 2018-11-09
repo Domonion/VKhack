@@ -94,3 +94,12 @@ class EventCategories(models.Model):
 class EventSubcategories(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+
+def get_all_subcategories():
+    result = dict()
+    for item in list(Category.objects.all()):
+        result[item.name] = list()
+    for item in list(Subcategory.objects.all()):
+        result[item.parent.name].append(item.name)
+    return result
