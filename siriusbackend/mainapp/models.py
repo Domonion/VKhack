@@ -24,6 +24,9 @@ class UserAchievement(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
 
+    def to_json(self):
+        return self.achievement.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=256)

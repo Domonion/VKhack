@@ -41,6 +41,16 @@ def get_user_info(request):
     user_json["first_name"] = api.users.get()[0]["first_name"]
     user_json["last_name"] = api.users.get()[0]["last_name"]
 
+    user_json["interests"] = []
+    for interest in user.userinterests_set.all():
+        user_json["interests"].append(interest.to_json())
+
+    user_json["achievements"] = []
+    for achievement in user.userachievement_set:
+        user_json["achievements"].append(achievement.to_json())
+
+    user_json["rank"] = 0
+
     return JsonResponse(user_json)
 
 
