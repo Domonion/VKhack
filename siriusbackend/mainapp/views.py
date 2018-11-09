@@ -14,12 +14,7 @@ def _get_api(token="ce3641fdce3641fdce3641fd4ece6ff12dcce36ce3641fd95d3ba5bcc826
 
 
 def get_all_categories(responce):
-    result = dict()
-    for item in list(models.Subcategory.objects.all()):
-        if item.parent.name not in result:
-            result[item.parent.name] = list()
-        result[item.parent.name].append(item.name)
-    return JsonResponse(result)
+    return JsonResponse(models.get_all_subcategories())
 
 
 def get_user_info(request):
