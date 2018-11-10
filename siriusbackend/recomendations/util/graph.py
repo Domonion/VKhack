@@ -25,11 +25,19 @@ def read_file(file_path):
     return graph
 
 
-def write_graph(file_path, graph):
+def write_file(file_path, item):
     with FileLock(file_path):
         file = open(file_path, 'w')
-        file.write(json.dumps(graph, separators=(',', ':')))
+        file.write(json.dumps(item, separators=(',', ':')))
         file.close()
+
+
+def add_query(file_path, query):
+    queries = read_file(file_path)
+    if not queries:
+        queries = list()
+    queries.append(query)
+    write_file(file_path, queries)
 
 
 def clear_file(file_path):
@@ -53,19 +61,19 @@ def init_subcategories_graph(file_path):
         for j, dst_subcat in enumerate(subcats):
             graph[src_subcat][dst_subcat] = INFINITY if i != j else 0
 
-    write_graph(file_path, graph)
+    write_file(file_path, graph)
 
 
 def init_edges_from_user_to_subcategories(file_path):
     categories = models.Subcategories.objects.all()
     size = max([x.id for x in categories]) + 1
-    with open(os.path.join(USER_SUBCATEGORIES_EDGES, file_path), "wb") as file:
+    with open(os.path.join(USER_SUBCATEGORIES_EDGES, file_path), "w") as file:
         file.write(json.dumps([INFINITY] * size))
 
 
 def get_edges_to_subcategories(user):
     filename = user.subcategories_file
-    with open(os.path.join(USER_SUBCATEGORIES_EDGES, filename), "rb") as file:
+    with open(os.path.join(USER_SUBCATEGORIES_EDGES, filename), "r") as file:
         array = json.loads(file.read())
     return {subcategory.name: array[i] for subcategory, i in zip(models.Subcategories.objects.order_by("id").all(),
                                                                  range(models.Subcategories.objects.count()))}
@@ -78,11 +86,5 @@ def update_graph(graph_file_path, queries_file_path, update_func):
     result_graph = update_func(graph, queries)
 
     clear_file(queries_file_path)
-    write_graph(graph_file_path, result_graph)
+    write_file(graph_file_path, result_graph)
 
-def add_vertex_to_event_graph(new_event):
-    graph = read_file(EVENT_GRAPH_FILE)
-    graph[new_event] = dict()
-    for another_event in graph:
-        graph[new_event][another_event] = INFINITY
-    write_graph(EVENT_GRAPH_FILE, graph)

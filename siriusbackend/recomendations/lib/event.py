@@ -8,9 +8,16 @@ import datetime
 
 
 class EventHandler:
-    event_graph = graph.read_graph(graph.EVENT_GRAPH)
-    subcategory_graph = graph.read_graph(graph.SUBCATEGORY_GRAPH)
-    categories = models.get_all_subcategories()
+
+    def __init__(self, event_graph_path, subcategory_graph_path, event_queries_path, subcategory_queries_path):
+        self.event_queries_path = event_queries_path
+        self.subcategory_queries_path = subcategory_queries_path
+        self.event_graph_path = event_graph_path
+        self.subcategory_graph_path = subcategory_graph_path
+
+        self.event_graph = graph.read_graph(event_graph_path)
+        self.subcategory_graph = graph.read_graph(subcategory_graph_path)
+        self.categories = models.get_all_subcategories()
 
     def get_all_sorted_events(self, user_id):
 
@@ -48,7 +55,7 @@ class EventHandler:
 
         cat2dist = dict()
         cat2subcats = self.categories
-        subcat2dist = dict()  # get from user
+        subcat2dist = graph.get_edges_to_subcategories()
         subcat2events = dict()
 
         for cat in cat2subcats:
@@ -84,4 +91,11 @@ class EventHandler:
                     v.edges.append((j, calc_event_edge(self.event_graph[v.obj.id][u.obj.id])))
 
         return dj(dj_graph)
+
+    def add_event_query(self, event):
+        graph.add_query(self.event_queries_path, event)
+
+    def add_subcategory_query(self, first_subcat, second_subcat, delta):
+        query = [first_subcat, second_subcat, delta]
+        graph.add_query(self.subcategory_queries_path, query)
 
