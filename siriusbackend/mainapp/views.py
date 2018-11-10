@@ -7,6 +7,7 @@ import dateutil.parser as datetimeparser
 from django.shortcuts import render
 from django.http.response import JsonResponse
 import django.core.exceptions as err
+from django.views.decorators.csrf import csrf_exempt
 
 from . import models
 
@@ -101,6 +102,7 @@ def get_user_events(request):
     return JsonResponse(result)
 
 
+@csrf_exempt
 def register_user(request):
     data = json.loads(request.body)
     user = models.User(vk_id=int(data["vk_id"]), subcategories_file=str(uuid.uuid4()))
@@ -191,3 +193,8 @@ def get_organizer_info(request):
     result = organizer.to_json()
     result["events"] = list([x.to_json(False) for x in models.Event.objects.filter(organizer=organizer).all()])
     return JsonResponse(result)
+
+#
+# def get_events(request):
+#     query_string = request.GET.get("q")
+#     return []
