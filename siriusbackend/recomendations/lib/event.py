@@ -59,7 +59,7 @@ class EventHandler:
             result = [vertex.obj for vertex in vert if vertex.type == 'event']
             return sorted(result, key=lambda t: t.distance)
 
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(datetime.timezone.utc)
         user = models.User.objects.get(vk_id=user_id)
 
         cat2dist = dict()
@@ -80,7 +80,7 @@ class EventHandler:
         for subcat in subcat2dist:
             dj_graph.append(MergedGraphVertex('subcategory', subcat))
         for item in list(models.Event.objects.all()):
-            if item.start_datetime > now.replace(tzinfo=None):
+            if item.start_datetime > now:
                 dj_graph.append(MergedGraphVertex('event', item))
 
         for item in list(models.EventSubcategories.objects.all()):
