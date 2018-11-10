@@ -7,6 +7,9 @@ class User(models.Model):
     spent_time = models.FloatField(default=0.0)
     subcategories_file = models.CharField(max_length=1024)
 
+    def __str__(self):
+        return str(self.vk_id)
+
     def to_json(self):
         return {"vk_id": self.vk_id,
                 "banned": self.banned,
@@ -17,6 +20,9 @@ class Achievement(models.Model):
     name = models.CharField(max_length=256)
     # picture
 
+    def __str__(self):
+        return self.name
+
     def to_json(self):
         return {"name": self.name}
 
@@ -24,6 +30,9 @@ class Achievement(models.Model):
 class UserAchievement(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user.vk_id) + ' - ' + str(self.achievement.name)
 
     def to_json(self):
         return self.achievement.name
@@ -44,7 +53,7 @@ class Subcategory(models.Model):
     parent = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return str(self.parent) + "/" + self.name
 
     def to_json(self):
         return {"name": self.name}
@@ -54,6 +63,12 @@ class UserInterests(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        tmp = str(self.user.vk_id) + ' - ' + str(self.category)
+        if self.subcategory is not None:
+            tmp += "/" + str(self.subcategory)
+        return tmp
 
     def to_json(self):
         if self.subcategory is None:
@@ -75,6 +90,8 @@ class Organizer(models.Model):
     is_verificated = models.BooleanField(default=False)
 
     # picture
+    def __str__(self):
+        return self.full_name
 
     def to_json(self):
         return {
@@ -108,7 +125,7 @@ class Event(models.Model):
 
     start_datetime = models.DateTimeField(null=True)
     finish_datetime = models.DateTimeField(null=True)
-    week_day = models.PositiveSmallIntegerField()
+    week_day = models.PositiveSmallIntegerField(null=True)
 
     place_address = models.TextField()
     place_location_latitude = models.FloatField(null=True)
@@ -123,6 +140,9 @@ class Event(models.Model):
 
     organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
     def get_type_name(self):
         for x in self.TYPES:
             if self.type == x[0]:
@@ -134,12 +154,13 @@ class Event(models.Model):
             "name": self.name,
             "type": self.get_type_name(),
             "description": self.description,
+            "id": self.id,
         }
 
         if self.start_datetime is not None:
-            result["start_datetime"] = self.start_datetime
+            result["start_datetime"] = str(self.start_datetime)
         if self.finish_datetime is not None:
-            result["finish_datetime"] = self.finish_datetime
+            result["finish_datetime"] = str(self.finish_datetime)
         if self.week_day != 0:
             result["week_day"] = self.week_day
         if self.place_address != "":
@@ -161,6 +182,9 @@ class UserEvent(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.user.vk_id) + " - " + str(self.event)
+
     def to_json(self):
         return self.event.to_json()
 
@@ -169,10 +193,27 @@ class EventCategories(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.event) + " - " + str(self.category)
+
 
 class EventSubcategories(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    subcategory = models.ForeignKey(Category, on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.event) + " - " + str(self.subcategory)
+
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+    mark = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    text = models.TextField()
+
+    def __str__(self):
+        return str(self.user.vk_id) + " - " + str(self.event) + " - " + str(self.mark)
 
 
 def get_all_subcategories():

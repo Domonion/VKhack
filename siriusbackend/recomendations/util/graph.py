@@ -79,3 +79,10 @@ def update_graph(graph_file_path, queries_file_path, update_func):
 
     clear_file(queries_file_path)
     write_graph(graph_file_path, result_graph)
+
+def add_vertex_to_event_graph(new_event):
+    graph = read_file(EVENT_GRAPH_FILE)
+    graph[new_event] = dict()
+    for another_event in graph:
+        graph[new_event][another_event] = INFINITY
+    write_graph(EVENT_GRAPH_FILE, graph)

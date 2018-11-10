@@ -42,8 +42,11 @@ def get_user_info(request):
 
     user_json = user.to_json()
 
-    user_json["first_name"] = api.users.get()[0]["first_name"]
-    user_json["last_name"] = api.users.get()[0]["last_name"]
+    api_response = api.users.get(user_ids=[user_id], fields=["photo_200"])
+
+    user_json["first_name"] = api_response[0]["first_name"]
+    user_json["last_name"] = api_response[0]["last_name"]
+    user_json["picture"] = api_response[0]["photo_200"]
 
     user_json["interests"] = []
     for interest in user.userinterests_set.all():
@@ -88,10 +91,10 @@ def get_user_events(request):
     api = _get_api()
     # user_vk = api.users.get()
     # user_id = int(user_vk[0]["id"])
-    user_id = int(request.GET.get("id"))
+    user_id = int(request.GET.get("vk_id"))
 
     try:
-        user = models.User.objects.get(id=user_id)
+        user = models.User.objects.get(vk_id=user_id)
     except err.ObjectDoesNotExist:
         return JsonResponse({"error": "user does not exist"})
 
@@ -208,3 +211,23 @@ def get_event_info(request):
 # def get_events(request):
 #     query_string = request.GET.get("q")
 #     return []
+
+
+@csrf_exempt
+def add_review(request):
+    data = json.loads(request.body)
+
+    user_vk_id = data.get("user_id")
+    event_id = data.get("event_id")
+    mark = data.get("mark")
+    text = data.get("text", "")
+
+    if user_vk_id is None or event_id is None or mark is None:
+        return JsonResponse({"error": "user_vk_id, event_id and mark must be specified"})
+
+    review = models.Review(user=models.User.objects.get(vk_id=user_vk_id),
+                           event_id=event_id,
+                           mark=int(mark),
+                           text=text)
+    review.save()
+    return JsonResponse({"id": review.id})
