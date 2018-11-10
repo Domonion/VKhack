@@ -80,7 +80,7 @@ class EventHandler:
         for subcat in subcat2dist:
             dj_graph.append(MergedGraphVertex('subcategory', subcat))
         for item in list(models.Event.objects.all()):
-            if item.start_datetime > now:
+            if item.start_datetime > now.replace(tzinfo=None):
                 dj_graph.append(MergedGraphVertex('event', item))
 
         for item in list(models.EventSubcategories.objects.all()):
