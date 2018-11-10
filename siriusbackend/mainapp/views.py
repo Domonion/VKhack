@@ -102,7 +102,7 @@ def get_user_events(request):
     result = []
     for event in events:
         result.append(event.to_json())
-    return JsonResponse(result)
+    return JsonResponse(result, safe=False)
 
 
 @csrf_exempt
