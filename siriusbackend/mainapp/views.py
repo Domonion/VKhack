@@ -14,7 +14,7 @@ from . import models
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from recomendations.lib import event
+from recomendations.lib.event import *
 
 
 def _get_api(token="ce3641fdce3641fdce3641fd4ece6ff12dcce36ce3641fd95d3ba5bcc826e6a2fcb58b5"):
@@ -217,7 +217,13 @@ def get_event_info(request):
 
 
 def get_events(request):
-    pass
+    by_location = request.GET.get("by_location", False)
+    user_id = request.GET.get("user_id")
+    if user_id is None:
+        return JsonResponse({"error": "kek"})
+
+    events = event_handler.get_all_sorted_events(user_id)
+    return JsonResponse([event.to_json() for event in events])
 
 
 @csrf_exempt
