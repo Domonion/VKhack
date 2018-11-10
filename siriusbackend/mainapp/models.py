@@ -158,9 +158,9 @@ class Event(models.Model):
         }
 
         if self.start_datetime is not None:
-            result["start_datetime"] = self.start_datetime.strftime("%Y-%m-%d'T'%H:%M:%S")
+            result["start_datetime"] = self.start_datetime.strftime("%Y-%m-%d'T'%H:%M:%S%z")
         if self.finish_datetime is not None:
-            result["finish_datetime"] = self.finish_datetime.strftime("%Y-%m-%d'T'%H:%M:%S")
+            result["finish_datetime"] = self.finish_datetime.strftime("%Y-%m-%d'T'%H:%M:%S%z")
         if self.week_day != 0:
             result["week_day"] = self.week_day
         if self.place_address != "":
