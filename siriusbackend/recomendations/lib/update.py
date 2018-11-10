@@ -14,13 +14,13 @@ def update_graph_set(graph, queries):
     return res
 
 
-def update_graph_add(event_graph, new_events):
-    for new_event in new_events:
+def update_graph_add(event_graph, new_events_id):
+    for new_event_id in new_events_id:
         tmp_dist = dict()
-        for old_event in event_graph:
-            event_graph[old_event.id][new_event.id] = files_to_graph.INFINITY
-            tmp_dist[old_event.id] = files_to_graph.INFINITY
-        event_graph[new_event.id] = tmp_dist
+        for old_event_id in event_graph:
+            event_graph[old_event_id][new_event_id] = files_to_graph.INFINITY
+            tmp_dist[old_event_id] = files_to_graph.INFINITY
+        event_graph[new_event_id] = tmp_dist
 
 
 def update_graph(graph_file_path, queries_file_path, update_func):

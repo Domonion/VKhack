@@ -102,7 +102,7 @@ class EventHandler:
         return dj(dj_graph)
 
     def add_event_add_query(self, event):
-        files_to_graph.add_query(self.event_add_queries_path, event)
+        files_to_graph.add_query(self.event_add_queries_path, event.id)
 
     def add_event_set_query(self, first_event_id, second_event_id, delta):
         query = [first_event_id, second_event_id, delta]
