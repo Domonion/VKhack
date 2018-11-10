@@ -47,3 +47,5 @@ class Updater:
 
     def stop(self):
         self.need_stop = True
+
+updater = Updater()

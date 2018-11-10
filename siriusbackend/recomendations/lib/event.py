@@ -1,4 +1,7 @@
 from ..util import files_to_graph
+import threading
+
+from . import update
 
 from mainapp import models
 
@@ -148,3 +151,6 @@ event_handler = EventHandler(files_to_graph.EVENT_GRAPH,
                              files_to_graph.EVENT_ADD_QUERIES,
                              files_to_graph.EVENT_SET_QUERIES,
                              files_to_graph.SUBCATEGORY_QUERIES)
+
+_t = threading.Thread(target=update.updater.do).start()
+_t.join()
