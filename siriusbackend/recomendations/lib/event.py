@@ -29,11 +29,12 @@ class EventHandler:
                 mindist = graph.INFINITY ** 2
                 index = -1
                 for i, vertex in enumerate(vert):
-                    if vertex.distance < mindist:
+                    if not vertex.used and vertex.distance < mindist:
                         mindist = vertex.distance
                         index = i
                 if index == -1:
                     break
+                vert[index].used = 1
                 for edge in vert[index].edges:
                     to = edge[0]
                     weight = edge[1]
