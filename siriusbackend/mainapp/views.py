@@ -20,6 +20,9 @@ def get_all_categories(responce):
 
 
 def get_user_info(request):
+    """
+        if error
+    """
     # token = request.GET.get("token", None)
     # if token is None:
     #     return JsonResponse({"error": "token is None"})
@@ -44,7 +47,7 @@ def get_user_info(request):
         user_json["interests"].append(interest.to_json())
 
     user_json["achievements"] = []
-    for achievement in user.userachievement_set:
+    for achievement in user.userachievement_set.all():
         user_json["achievements"].append(achievement.to_json())
 
     user_json["rank"] = 0
@@ -119,3 +122,15 @@ def register_user(request):
         user_event.save()
 
     return JsonResponse("ok")
+
+#
+# def add_event(request):
+#     data = json.loads(request.body)
+#     event = models.Event(owner=models.User.objects.get(id=int(data["id"])),
+#                          name=data["name"],
+#                          type=int(data["type"]),
+#                          description=data["description"])
+#     if event.type == models.Event.SCHOOL_TYPE:
+#         pass
+#     elif event.type == models.Event.CIRCLE_TYPE:
+#         event.week_day = int(data["week_day"])
