@@ -85,7 +85,7 @@ class EventHandler:
 
         for item in list(models.EventSubcategories.objects.all()):
             if item.event.start_datetime is None or item.event.start_datetime > now:
-                subcat2events[item.subcategory].add(item.event)
+                subcat2events[item.subcategory.name].add(item.event)
 
         for i, v in enumerate(dj_graph):
             for j, u in enumerate(dj_graph):
