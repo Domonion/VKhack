@@ -1,3 +1,5 @@
+import threading
+
 from recomendations.util import files_to_graph
 import time
 
@@ -48,13 +50,30 @@ class Updater:
 
     def do(self):
         while not self.need_stop:
+            print("Start serving updates...")
+
+            time.sleep(self.period)
+
             update_graph(files_to_graph.EVENT_GRAPH, files_to_graph.EVENT_ADD_QUERIES, update_graph_add)
             update_graph(files_to_graph.EVENT_GRAPH, files_to_graph.EVENT_SET_QUERIES, update_graph_set)
             update_graph(files_to_graph.SUBCATEGORY_GRAPH, files_to_graph.SUBCATEGORY_QUERIES, update_graph_set)
 
-            time.sleep(self.period)
 
     def stop(self):
         self.need_stop = True
 
 updater = Updater()
+
+
+def _kek_target():
+    while True:
+        try:
+            current_alive_thread = threading.Thread(target=updater.do)
+            current_alive_thread.start()
+        except Exception:
+            pass
+        time.sleep(1)
+
+
+_kek_thread = threading.Thread(target=updater.do)
+_kek_thread.start()
