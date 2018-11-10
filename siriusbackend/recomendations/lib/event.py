@@ -17,17 +17,20 @@ class EventHandler:
         self.event_graph_path = event_graph_path
         self.subcategory_graph_path = subcategory_graph_path
 
-        self.event_graph = files_to_graph.read_graph(event_graph_path)
-        self.subcategory_graph = files_to_graph.read_graph(subcategory_graph_path)
+        self.event_graph = files_to_graph.read_file(event_graph_path)
+        self.subcategory_graph = files_to_graph.read_file(subcategory_graph_path)
         self.categories = models.get_all_subcategories()
 
         self.subcategories_delta = -5
         self.subcategories_dec = -1
 
+    def eval_time_delta(self, old_event, new_event):
+        return -(new_event.finish_time - old_event.finish_time).days()
+
     def get_all_sorted_events(self, user_id):
 
         class MergedGraphVertex:
-            def __init__(self, vertex_type, obj, dist=graph.INFINITY ** 2):
+            def __init__(self, vertex_type, obj, dist=files_to_graph.INFINITY ** 2):
                 self.type = vertex_type
                 self.obj = obj
                 self.distance = dist
@@ -100,8 +103,12 @@ class EventHandler:
     def add_event_add_query(self, event):
         files_to_graph.add_query(self.event_add_queries_path, event)
 
-    def add_event_set_query(self, event):
-        files_to_graph.add_query(self.event_set_queries_path, event)
+    def add_event_set_query(self, first_event_id, second_event_id, delta):
+        query = [first_event_id, second_event_id, delta]
+        files_to_graph.add_query(self.event_set_queries_path, query)
+
+    def add_event_set_queries(self, queries):
+        files_to_graph.add_query(self.event_set_queries_path, queries)
 
     def add_subcategory_query(self, first_subcat, second_subcat, delta):
         query = [first_subcat, second_subcat, delta]
@@ -110,7 +117,7 @@ class EventHandler:
     def add_subcategory_queries(self, queries):
         files_to_graph.add_queries(self.subcategory_queries_path, queries)
 
-    def process_event(self, event, weight):
+    def process_event(self, user, event, weight):
         subcats = list(models.EventSubcategories.objects.filter(event=event))
         queries = list()
 
@@ -121,11 +128,19 @@ class EventHandler:
 
         self.add_subcategory_queries(queries)
 
-    def subscribe(self, event):
-        self.process_event(event, self.subcategories_dec)
+        now = datetime.datetime.now()
+        old_events = [item.event for item in list(models.UserEvents.objects.filter(user=user))
+                      if item.event.finish_datetime < now and not item.event.repeatable]
+        old_events = sorted(old_events, key=lambda t: t.finish_time)
+        queries = [[old_event, event, self.eval_time_delta(old_event, event)] for old_event in old_events]
 
-    def unsubscribe(self, event):
-        self.process_event(event, -self.subcategories_dec)
+        self.add_event_set_queries(queries)
 
-    def visit(self, event):
-        self.process_event(event, self.subcategories_delta)
+    def subscribe(self, user, event):
+        self.process_event(user, event, self.subcategories_dec)
+
+    def unsubscribe(self, user, event):
+        self.process_event(user, event, -self.subcategories_dec)
+
+    def visit(self, user, event):
+        self.process_event(user, event, self.subcategories_delta)
