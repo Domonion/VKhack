@@ -57,8 +57,8 @@ class EventHandler:
                     weight = edge[1]
                     vert[to].distance = min(vert[to].distance, vert[index].distance + weight)
 
-            result = [vertex.obj for vertex in vert if vertex.type == 'event']
-            return sorted(result, key=lambda t: t.distance)
+            result = [vertex for vertex in vert if vertex.type == 'event']
+            return [v.obj for v in sorted(result, key=lambda t: t.distance)]
 
         now = datetime.datetime.now(datetime.timezone.utc)
         user = models.User.objects.get(vk_id=user_id)
