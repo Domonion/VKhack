@@ -141,9 +141,21 @@ def register_user(request):
 @csrf_exempt
 def add_event(request):
     data = json.loads(request.body)
+
+    kek = data["type"]
+    
+    foo = -1
+    for i, lol in enumerate(models.Event.TYPES):
+        if lol[1] == kek:
+            foo = 2 ** i
+            break
+
+    if foo == -1:
+        return JsonResponse({"error": "вы проиграли"})
+
     event = models.Event(owner=models.User.objects.get(id=int(data["id"])),
                          name=data["name"],
-                         type=int(data["type"]),
+                         type=foo,
                          description=data["description"])
 
     if event.type == models.Event.SCHOOL_TYPE:
