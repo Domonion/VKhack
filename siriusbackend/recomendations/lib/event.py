@@ -64,7 +64,7 @@ class EventHandler:
 
         cat2dist = dict()
         cat2subcats = self.categories
-        subcat2dist = files_to_graph.get_edges_to_subcategories()
+        subcat2dist = files_to_graph.get_edges_to_subcategories(user)
         subcat2events = dict()
 
         for cat in cat2subcats:
