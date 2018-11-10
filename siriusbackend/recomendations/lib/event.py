@@ -1,7 +1,6 @@
 from ..util import files_to_graph
 
 from mainapp import models
-from mainapp.models import *
 
 import datetime
 
