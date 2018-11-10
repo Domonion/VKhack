@@ -198,7 +198,7 @@ class EventCategories(models.Model):
 
 class EventSubcategories(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    subcategory = models.ForeignKey(Category, on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.event) + " - " + str(self.subcategory)
@@ -210,7 +210,7 @@ class Review(models.Model):
 
     mark = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     text = models.TextField()
-    
+
     def __str__(self):
         return str(self.user.vk_id) + " - " + str(self.event) + " - " + str(self.mark)
 
