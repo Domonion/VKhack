@@ -108,7 +108,7 @@ class Event(models.Model):
 
     start_datetime = models.DateTimeField(null=True)
     finish_datetime = models.DateTimeField(null=True)
-    week_day = models.PositiveSmallIntegerField()
+    week_day = models.PositiveSmallIntegerField(null=True)
 
     place_address = models.TextField()
     place_location_latitude = models.FloatField(null=True)
