@@ -175,6 +175,8 @@ class Event(models.Model):
         if org:
             result["organizer"] = self.organizer.to_json()
 
+        result["subscribe"] = False
+
         return result
 
 
@@ -186,7 +188,9 @@ class UserEvent(models.Model):
         return str(self.user.vk_id) + " - " + str(self.event)
 
     def to_json(self):
-        return self.event.to_json()
+        result = self.event.to_json()
+        result["subscribe"] = True
+        return result
 
 
 class EventCategories(models.Model):

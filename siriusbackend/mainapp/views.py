@@ -125,10 +125,11 @@ def register_user(request):
         user_interest = models.UserInterests(user=user, category=category, subcategory=subcategory)
         user_interest.save()
 
-    events = data["events"]
-    for event in events:
-        user_event = models.UserEvent(user=user, event_id=event)
-        user_event.save()
+    events = data.get("events")
+    if events is not None:
+        for event in events:
+            user_event = models.UserEvent(user=user, event_id=event)
+            user_event.save()
 
     return JsonResponse("ok", safe=False)
 
@@ -234,3 +235,36 @@ def add_review(request):
                            text=text)
     review.save()
     return JsonResponse({"id": review.id})
+
+
+def get_event_by_id(request):
+    vk_id = request.GET.get("user_id")
+    event_id = request.GET.get("event_id")
+
+    if vk_id is None or event_id is None:
+        return JsonResponse({"error": "vk_id and event_id must be specified"})
+
+    try:
+        user_event = models.UserEvent.objects.get(user_id=vk_id, event_id=event_id)
+    except err.ObjectDoesNotExist:
+        return JsonResponse({"error": "Object Does Not Exist"})
+
+    return user_event.to_json()
+
+
+def subscribe(request):
+    vk_id = request.GET.get("user_id")
+    event_id = request.GET.get("event_id")
+
+    if vk_id is None or event_id is None:
+        return JsonResponse({"error": "vk_id and event_id must be specified"})
+
+    try:
+        user_event = models.UserEvent.objects.get(user=models.User.objects.get(vk_id=vk_id), event_id=event_id)
+    except err.ObjectDoesNotExist:
+        kek = models.UserEvent(user=models.User.objects.get(vk_id=vk_id), event_id=event_id)
+        kek.save()
+        return kek.to_json()
+
+    user_event.delete()
+    return models.Event.objects.get(id=event_id).to_json()
