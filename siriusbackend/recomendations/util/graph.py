@@ -1,9 +1,16 @@
 import json
+import os
 from filelock import FileLock
 
 from mainapp import models
 
 INFINITY = 10**12
+HOME = os.environ['HOME']
+GRAPH_DIR = 'data'
+SUBCATEGORIES_GRAPH_FILE = 'subcategories_graph.json'
+EVENTS_GRAPH_FILE = 'events_graph.json'
+SUBCATEGORIES_GRAPH = os.path.join(HOME, GRAPH_DIR, SUBCATEGORIES_GRAPH_FILE)
+EVENTS_GRAPH = os.path.join(HOME, GRAPH_DIR, EVENTS_GRAPH_FILE)
 
 
 def read_file(file_path):
@@ -16,8 +23,8 @@ def read_file(file_path):
 def write_graph(file_path, graph):
     with FileLock(file_path):
         file = open(file_path, 'w')
-    json.dumps(graph, separators=(',', ':'))
-    file.close()
+        file.write(json.dumps(graph, separators=(',', ':')))
+        file.close()
 
 
 def clear_file(file_path):
@@ -28,7 +35,7 @@ def clear_file(file_path):
 def init_subcategories_graph(file_path):
     global INFINITY
 
-    categories = models.get_all_categories()
+    categories = models.get_all_subcategories()
 
     subcats_cnt = 0
     for cat in categories:
