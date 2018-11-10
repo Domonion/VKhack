@@ -35,7 +35,7 @@ def clear_file(file_path):
 def init_subcategories_graph(file_path):
     global INFINITY
 
-    categories = models.get_all_categories()
+    categories = models.get_all_subcategories()
 
     subcats_cnt = 0
     for cat in categories:
