@@ -27,4 +27,6 @@ urlpatterns = [
     path('get_user_events/', mainapp.views.get_user_events),
 
     path("register/", mainapp.views.register_user),
+
+    path("add_event/", mainapp.views.add_event),
 ]
