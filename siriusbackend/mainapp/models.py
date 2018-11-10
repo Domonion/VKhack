@@ -53,7 +53,7 @@ class Subcategory(models.Model):
     parent = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return str(self.parent) + "/" + self.name
 
     def to_json(self):
         return {"name": self.name}
