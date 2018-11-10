@@ -5,19 +5,26 @@ from filelock import FileLock
 from mainapp import models
 
 INFINITY = 10**12
+
 HOME = os.environ['HOME']
 GRAPH_DIR = 'data'
+USER_DIR = 'users'
+
+USER_SUBCATEGORIES_DIR = os.path.join(GRAPH_DIR, USER_DIR)
+
 SUBCATEGORY_GRAPH_FILE = 'subcategories_graph.json'
 EVENT_GRAPH_FILE = 'events_graph.json'
+
 SUBCATEGORY_GRAPH = os.path.join(HOME, GRAPH_DIR, SUBCATEGORY_GRAPH_FILE)
 EVENT_GRAPH = os.path.join(HOME, GRAPH_DIR, EVENT_GRAPH_FILE)
+
 SUBCATEGORY_QUERIES_FILE = 'subcategories_queries.json'
 EVENT_ADD_QUERIES_FILE = 'events_add_queries.json'
 EVENT_SET_QUERIES_FILE = 'events_set_queries.json'
+
 SUBCATEGORY_QUERIES = os.path.join(HOME, GRAPH_DIR, SUBCATEGORY_QUERIES_FILE)
 EVENT_ADD_QUERIES = os.path.join(HOME, GRAPH_DIR, EVENT_ADD_QUERIES_FILE)
 EVENT_SET_QUERIES = os.path.join(HOME, GRAPH_DIR, EVENT_SET_QUERIES_FILE)
-USER_SUBCATEGORIES_EDGES = os.path.join(HOME, GRAPH_DIR)
 
 
 def read_file(file_path):
@@ -75,18 +82,16 @@ def init_subcategories_graph(file_path):
 
 
 def init_edges_from_user_to_subcategories(file_path):
-    categories = models.Subcategory.objects.all()
-    size = max([x.id for x in categories]) + 1
-    with open(os.path.join(USER_SUBCATEGORIES_EDGES, file_path), "w") as file:
-        file.write(json.dumps([INFINITY] * size))
+    subcategories = models.Subcategory.objects.all()
+    with open(os.path.join(USER_SUBCATEGORIES_DIR, file_path), "w") as file:
+        result = {x: INFINITY for x in subcategories}
+        file.write(json.dumps(result))
 
 
 def get_edges_to_subcategories(user):
     filename = user.subcategories_file
-    with open(os.path.join(USER_SUBCATEGORIES_EDGES, filename), "r") as file:
-        array = json.loads(file.read())
-    return {subcategory.name: array[i] for subcategory, i in zip(models.Subcategories.objects.order_by("id").all(),
-                                                                 range(models.Subcategories.objects.count()))}
+    with open(os.path.join(USER_SUBCATEGORIES_DIR, filename), "r") as file:
+        return json.loads(file.read())
 
 
 
