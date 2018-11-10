@@ -22,7 +22,7 @@ def update_graph_add(event_graph, new_events_id):
         for old_event_id in event_graph:
             event_graph[old_event_id][new_event_id] = files_to_graph.INFINITY
             tmp_dict[old_event_id] = files_to_graph.INFINITY
-        tmp_dict[new_event_id] = new_event_id
+        tmp_dict[new_event_id] = 0
         event_graph[new_event_id] = tmp_dict
     return event_graph
 
