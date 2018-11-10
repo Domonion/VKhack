@@ -1,10 +1,9 @@
-from recomendations.util import files_to_graph
+from ..util import files_to_graph
 
 from mainapp import models
 from mainapp.models import *
 
 import datetime
-
 
 class EventHandler:
 
@@ -17,8 +16,8 @@ class EventHandler:
         self.event_graph_path = event_graph_path
         self.subcategory_graph_path = subcategory_graph_path
 
-        self.event_graph = files_to_graph.read_graph(event_graph_path)
-        self.subcategory_graph = files_to_graph.read_graph(subcategory_graph_path)
+        self.event_graph = files_to_graph.read_file(event_graph_path)
+        self.subcategory_graph = files_to_graph.read_file(subcategory_graph_path)
         self.categories = models.get_all_subcategories()
 
         self.subcategories_delta = -5
@@ -27,7 +26,7 @@ class EventHandler:
     def get_all_sorted_events(self, user_id):
 
         class MergedGraphVertex:
-            def __init__(self, vertex_type, obj, dist=graph.INFINITY ** 2):
+            def __init__(self, vertex_type, obj, dist=files_to_graph.INFINITY ** 2):
                 self.type = vertex_type
                 self.obj = obj
                 self.distance = dist
@@ -129,3 +128,10 @@ class EventHandler:
 
     def visit(self, event):
         self.process_event(event, self.subcategories_delta)
+
+
+event_handler = EventHandler(files_to_graph.EVENT_GRAPH,
+                             files_to_graph.SUBCATEGORY_GRAPH,
+                             files_to_graph.EVENT_ADD_QUERIES,
+                             files_to_graph.EVENT_SET_QUERIES,
+                             files_to_graph.SUBCATEGORY_QUERIES)
