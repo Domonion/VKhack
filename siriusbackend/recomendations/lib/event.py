@@ -1,10 +1,9 @@
-from recomendations.util import files_to_graph
+from ..util import files_to_graph
 
 from mainapp import models
 from mainapp.models import *
 
 import datetime
-
 
 class EventHandler:
 
@@ -144,3 +143,9 @@ class EventHandler:
 
     def visit(self, user, event):
         self.process_event(user, event, self.subcategories_delta)
+
+event_handler = EventHandler(files_to_graph.EVENT_GRAPH,
+                             files_to_graph.SUBCATEGORY_GRAPH,
+                             files_to_graph.EVENT_ADD_QUERIES,
+                             files_to_graph.EVENT_SET_QUERIES,
+                             files_to_graph.SUBCATEGORY_QUERIES)

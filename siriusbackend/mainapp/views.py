@@ -10,7 +10,11 @@ import django.core.exceptions as err
 from django.views.decorators.csrf import csrf_exempt
 
 from . import models
-# from ..recomendations.lib import event
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from recomendations.lib import event
 
 
 def _get_api(token="ce3641fdce3641fdce3641fd4ece6ff12dcce36ce3641fd95d3ba5bcc826e6a2fcb58b5"):
