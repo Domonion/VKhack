@@ -36,6 +36,7 @@ class EventHandler:
                 self.obj = obj
                 self.distance = dist
                 self.edges = list()
+                self.used = False
 
         def calc_event_edge(weight):
             return weight
