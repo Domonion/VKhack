@@ -263,7 +263,7 @@ def subscribe(request):
     except err.ObjectDoesNotExist:
         kek = models.UserEvent(user=models.User.objects.get(vk_id=vk_id), event_id=event_id)
         kek.save()
-        return kek.to_json()
+        return JsonResponse(kek.to_json())
 
     user_event.delete()
     return JsonResponse(models.Event.objects.get(id=event_id).to_json())
