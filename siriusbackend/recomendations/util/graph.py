@@ -37,14 +37,17 @@ def init_subcategories_graph(file_path):
 
     categories = models.get_all_subcategories()
 
-    subcats_cnt = 0
+    subcats = list()
     for cat in categories:
         for subcat in cat:
-            subcats_cnt += len(subcat)
+            subcats.append(subcat)
 
-    graph = [[INFINITY] * subcats_cnt for i in range(subcats_cnt)]
-    for i in range(subcats_cnt):
-        graph[i][i] = 0
+    graph = dict()
+
+    for i, src_subcat in enumerate(subcats):
+        graph[src_subcat] = dict()
+        for j, dst_subcat in enumerate(subcats):
+            graph[src_subcat][dst_subcat] = INFINITY if i != j else 0
 
     write_graph(file_path, graph)
 
