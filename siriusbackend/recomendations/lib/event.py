@@ -60,7 +60,7 @@ class EventHandler:
             return sorted(result, key=lambda t: t.distance)
 
         now = datetime.datetime.now()
-        user = models.User.objects.get(id=user_id)
+        user = models.User.objects.get(vk_id=user_id)
 
         cat2dist = dict()
         cat2subcats = self.categories
