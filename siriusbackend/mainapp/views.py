@@ -91,10 +91,10 @@ def get_user_events(request):
     api = _get_api()
     # user_vk = api.users.get()
     # user_id = int(user_vk[0]["id"])
-    user_id = int(request.GET.get("id"))
+    user_id = int(request.GET.get("vk_id"))
 
     try:
-        user = models.User.objects.get(id=user_id)
+        user = models.User.objects.get(vk_id=user_id)
     except err.ObjectDoesNotExist:
         return JsonResponse({"error": "user does not exist"})
 
