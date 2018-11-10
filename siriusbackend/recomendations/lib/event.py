@@ -97,7 +97,7 @@ class EventHandler:
                 if v.type == 'category' and u.type == 'subcategory':  # category->subcategory edges
                     v.edges.append((j, subcat2dist[u.obj]))
                 if v.type == 'event' and u.type == 'event':  # event->event edges
-                    v.edges.append((j, calc_event_edge(self.event_graph[v.obj.id][u.obj.id])))
+                    v.edges.append((j, calc_event_edge(self.event_graph[str(v.obj.id)][str(u.obj.id)])))
 
         return dj(dj_graph)
 
@@ -152,6 +152,3 @@ event_handler = EventHandler(files_to_graph.EVENT_GRAPH,
                              files_to_graph.EVENT_ADD_QUERIES,
                              files_to_graph.EVENT_SET_QUERIES,
                              files_to_graph.SUBCATEGORY_QUERIES)
-
-# _t = threading.Thread(target=update.updater.do).start()
-# _t.join()
