@@ -1,6 +1,7 @@
 import json
 
 import vk
+import dateutil.parser as datetimeparser
 
 from django.shortcuts import render
 from django.http.response import JsonResponse
@@ -33,7 +34,7 @@ def get_user_info(request):
     user_id = int(request.GET.get("id"))
 
     try:
-        user = models.User.objects.get(id=user_id)
+        user = models.User.objects.get(vk_id=user_id)
     except err.ObjectDoesNotExist:
         return JsonResponse({"error": "user does not exist"})
 
@@ -123,14 +124,39 @@ def register_user(request):
 
     return JsonResponse("ok")
 
-#
+
 # def add_event(request):
 #     data = json.loads(request.body)
 #     event = models.Event(owner=models.User.objects.get(id=int(data["id"])),
 #                          name=data["name"],
 #                          type=int(data["type"]),
 #                          description=data["description"])
+#
 #     if event.type == models.Event.SCHOOL_TYPE:
 #         pass
 #     elif event.type == models.Event.CIRCLE_TYPE:
 #         event.week_day = int(data["week_day"])
+#         event.start_datetime = datetimeparser.parse(data["start_datetime"])
+#         event.finish_datetime = datetimeparser.parse(data["finish_datetime"])
+#         if data.get("contact_email") is not None:
+#             event.contact_email = data.get("contact_email")
+#         if data.get("contact_data") is not None:
+#             event.contact_email = data.get("contact_data")
+#         event.repeatable = True
+#         if data.get("place_address") is not None:
+#             event.place_address = data.get("place_address")
+#         if data.get("organizer") is not None:
+#             event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+#
+#     elif event.type == models.Event.SINGLE_TIME_TYPE:
+#         event.place_address = data["place_address"]
+#         event.start_datetime = datetimeparser.parse(data["start_datetime"])
+#         event.finish_datetime = datetimeparser.parse(data["finish_datetime"])
+#         if data.get("organizer") is not None:
+#             event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+#         if data.get("contact_email") is not None:
+#             event.contact_email = data.get("contact_email")
+#         if data.get("contact_data") is not None:
+#             event.contact_email = data.get("contact_data")
+#
+#     elif event.type == models.Event.OTHER_TYPE:
