@@ -67,7 +67,7 @@ class UserInterests(models.Model):
     def __str__(self):
         tmp = str(self.user.vk_id) + ' - ' + str(self.category)
         if self.subcategory is not None:
-            tmp += "/" + self.subcategory
+            tmp += "/" + str(self.subcategory)
         return tmp
 
     def to_json(self):
