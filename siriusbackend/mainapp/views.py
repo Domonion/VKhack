@@ -107,9 +107,10 @@ def register_user(request):
 
     interests = data["interests"]
     for interest in interests:
-        if isinstance(interest, list):
-            category = models.Category.objects.get(name=interest[0])
-            subcategory = models.Subcategory.objects.get(name=interest[1])
+        if "/" in interest:
+            x = interest.split("/")
+            category = models.Category.objects.get(name=x[0])
+            subcategory = models.Subcategory.objects.get(name=x[1])
         else:
             category = models.Category.objects.get(name=interest)
             subcategory = None
