@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from recomendations import util
 from recomendations.util import graph
 
@@ -7,10 +5,6 @@ from mainapp import models
 from mainapp.models import *
 
 import datetime
-
-
-
-
 
 
 class EventHandler:
@@ -30,12 +24,30 @@ class EventHandler:
         def calc_event_edge(weight):
             return weight
 
+        def dj(vert):
+            for it in range(len(vert)):
+                mindist = graph.INFINITY ** 2
+                index = -1
+                for i, vertex in enumerate(vert):
+                    if vertex.distance < mindist:
+                        mindist = vertex.distance
+                        index = i
+                if index == -1:
+                    break
+                for edge in vert[index].edges:
+                    to = edge[0]
+                    weight = edge[1]
+                    vert[to].distance = min(vert[to].distance, vert[index] + weight)
+
+            result = [vertex.obj for vertex in vert if vertex.type == 'event']
+            return sorted(result, key=lambda t: t.distance)
+
         now = datetime.datetime.now()
         user = models.User.objects.get(id=user_id)
 
         cat2dist = dict()
         cat2subcats = self.categories
-        subcat2dist = dict() # get from user
+        subcat2dist = dict()  # get from user
         subcat2events = dict()
 
         for cat in cat2subcats:
@@ -43,23 +55,23 @@ class EventHandler:
                 cat2dist[cat] = cat2dist.get(cat, 0) + subcat2dist[subcat]
                 subcat2events[subcat] = set()
 
-        graph = list()
-        graph.append(MergedGraphVertex('user', user, 0))
+        dj_graph = list()
+        dj_graph.append(MergedGraphVertex('user', user, 0))
         for cat in cat2dist:
-            graph[0].edges.append((len(graph), cat2dist[cat]))  # user->cat edges
-            graph.append(MergedGraphVertex('category', cat)) 
+            dj_graph[0].edges.append((len(dj_graph), cat2dist[cat]))  # user->cat edges
+            dj_graph.append(MergedGraphVertex('category', cat))
         for subcat in subcat2dist:
-            graph.append(MergedGraphVertex('subcategory', subcat))
+            dj_graph.append(MergedGraphVertex('subcategory', subcat))
         for item in list(models.Event.objects.all()):
             if item.start_datetime > now:
-                graph.append(MergedGraphVertex('event', item))
+                dj_graph.append(MergedGraphVertex('event', item))
                 
         for item in list(models.EventSubcategories.objects.all()):
             if item.event.start_datetime > now:
                 subcat2events[item.subcategory].add(item.event)
         
-        for i, v in enumerate(graph):
-            for j, u in enumerate(graph):
+        for i, v in enumerate(dj_graph):
+            for j, u in enumerate(dj_graph):
                 if v.type == 'subcategory' and u.type == 'event':
                     if u.obj in subcat2events[v.obj]:  # subcategory->event edges
                         v.edges.append((j, 0))
@@ -70,5 +82,5 @@ class EventHandler:
                 if v.type == 'event' and u.type == 'event':  # event->event edges
                     v.edges.append((j, calc_event_edge(self.event_graph[v.obj][u.obj])))
 
-        return dict()
+        return dj(dj_graph)
 
