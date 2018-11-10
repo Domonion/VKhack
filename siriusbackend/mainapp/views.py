@@ -129,6 +129,7 @@ def register_user(request):
     return JsonResponse("ok", safe=False)
 
 
+@csrf_exempt
 def add_event(request):
     data = json.loads(request.body)
     event = models.Event(owner=models.User.objects.get(id=int(data["id"])),
@@ -193,6 +194,15 @@ def get_organizer_info(request):
     result = organizer.to_json()
     result["events"] = list([x.to_json(False) for x in models.Event.objects.filter(organizer=organizer).all()])
     return JsonResponse(result)
+
+
+def get_event_info(request):
+    event_id = request.GET.get("id")
+    if event_id is None:
+        return JsonResponse({"error": "id must be specified"})
+
+    event = models.Event.objects.get(id=int(event_id))
+    return JsonResponse(event.to_json())
 
 #
 # def get_events(request):

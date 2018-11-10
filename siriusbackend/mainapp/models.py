@@ -119,6 +119,8 @@ class Event(models.Model):
     contact_email = models.EmailField()
     contact_data = models.TextField()
 
+    is_verified = models.BooleanField(default=False)
+
     organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
 
     def get_type_name(self):
