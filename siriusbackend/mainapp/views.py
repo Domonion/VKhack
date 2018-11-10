@@ -126,7 +126,7 @@ def register_user(request):
         user_event = models.UserEvent(user=user, event_id=event)
         user_event.save()
 
-    return JsonResponse("ok")
+    return JsonResponse("ok", safe=False)
 
 
 def add_event(request):
