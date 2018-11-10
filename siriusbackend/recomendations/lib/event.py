@@ -81,7 +81,7 @@ class EventHandler:
                 if v.type == 'category' and u.type == 'subcategory':  # category->subcategory edges
                     v.edges.append((j, subcat2dist[u.obj]))
                 if v.type == 'event' and u.type == 'event':  # event->event edges
-                    v.edges.append((j, calc_event_edge(self.event_graph[v.obj][u.obj])))
+                    v.edges.append((j, calc_event_edge(self.event_graph[v.obj.id][u.obj.id])))
 
         return dj(dj_graph)
 
