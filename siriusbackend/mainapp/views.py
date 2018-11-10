@@ -10,7 +10,7 @@ import django.core.exceptions as err
 from django.views.decorators.csrf import csrf_exempt
 
 from . import models
-# from recomendations.lib import event as event_graph
+# from ..recomendations.lib import event
 
 
 def _get_api(token="ce3641fdce3641fdce3641fd4ece6ff12dcce36ce3641fd95d3ba5bcc826e6a2fcb58b5"):
@@ -211,10 +211,9 @@ def get_event_info(request):
     event = models.Event.objects.get(id=int(event_id))
     return JsonResponse(event.to_json())
 
-#
-# def get_events(request):
-#     query_string = request.GET.get("q")
-#     return []
+
+def get_events(request):
+    pass
 
 
 @csrf_exempt
@@ -249,7 +248,7 @@ def get_event_by_id(request):
     except err.ObjectDoesNotExist:
         return JsonResponse({"error": "Object Does Not Exist"})
 
-    return user_event.to_json()
+    return JsonResponse(user_event.to_json())
 
 
 def subscribe(request):
