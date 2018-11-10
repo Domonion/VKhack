@@ -143,7 +143,7 @@ def add_event(request):
     data = json.loads(request.body)
 
     kek = data["type"]
-    
+
     foo = -1
     for i, lol in enumerate(models.Event.TYPES):
         if lol[1] == kek:
@@ -235,7 +235,7 @@ def get_events(request):
         return JsonResponse({"error": "kek"})
 
     events = event_handler.get_all_sorted_events(user_id)
-    return JsonResponse([event.to_json() for event in events])
+    return JsonResponse([event.to_json() for event in events], safe=False)
 
 
 @csrf_exempt
