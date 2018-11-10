@@ -12,9 +12,11 @@ EVENT_GRAPH_FILE = 'events_graph.json'
 SUBCATEGORY_GRAPH = os.path.join(HOME, GRAPH_DIR, SUBCATEGORY_GRAPH_FILE)
 EVENT_GRAPH = os.path.join(HOME, GRAPH_DIR, EVENT_GRAPH_FILE)
 SUBCATEGORY_QUERIES_FILE = 'subcategories_queries.json'
-EVENT_QUERIES_FILE = 'events_queries.json'
+EVENT_ADD_QUERIES_FILE = 'events_add_queries.json'
+EVENT_SET_QUERIES_FILE = 'events_set_queries.json'
 SUBCATEGORY_QUERIES = os.path.join(HOME, GRAPH_DIR, SUBCATEGORY_QUERIES_FILE)
-EVENT_QUERIES = os.path.join(HOME, GRAPH_DIR, EVENT_QUERIES_FILE)
+EVENT_ADD_QUERIES = os.path.join(HOME, GRAPH_DIR, EVENT_ADD_QUERIES_FILE)
+EVENT_SET_QUERIES = os.path.join(HOME, GRAPH_DIR, EVENT_SET_QUERIES_FILE)
 USER_SUBCATEGORIES_EDGES = os.path.join(HOME, GRAPH_DIR)
 
 
@@ -79,12 +81,4 @@ def get_edges_to_subcategories(user):
                                                                  range(models.Subcategories.objects.count()))}
 
 
-def update_graph(graph_file_path, queries_file_path, update_func):
-    graph = read_file(graph_file_path)
-    queries = read_file(queries_file_path)
-
-    result_graph = update_func(graph, queries)
-
-    clear_file(queries_file_path)
-    write_file(graph_file_path, result_graph)
 
