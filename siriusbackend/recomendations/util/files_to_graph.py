@@ -75,7 +75,7 @@ def init_subcategories_graph(file_path):
 
 
 def init_edges_from_user_to_subcategories(file_path):
-    categories = models.Subcategories.objects.all()
+    categories = models.Subcategory.objects.all()
     size = max([x.id for x in categories]) + 1
     with open(os.path.join(USER_SUBCATEGORIES_EDGES, file_path), "w") as file:
         file.write(json.dumps([INFINITY] * size))
