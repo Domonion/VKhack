@@ -42,9 +42,11 @@ def get_user_info(request):
 
     user_json = user.to_json()
 
-    user_json["first_name"] = api.users.get()[0]["first_name"]
-    user_json["last_name"] = api.users.get()[0]["last_name"]
-    user_json["picture"] = api.users.get()[0]["photo_200"]
+    api_response = api.users.get(user_ids=[user_id], fields=["photo_200"])
+
+    user_json["first_name"] = api_response[0]["first_name"]
+    user_json["last_name"] = api_response[0]["last_name"]
+    user_json["picture"] = api_response[0]["photo_200"]
 
     user_json["interests"] = []
     for interest in user.userinterests_set.all():
