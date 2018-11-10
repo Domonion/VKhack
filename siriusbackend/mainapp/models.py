@@ -131,7 +131,7 @@ class Event(models.Model):
     place_location_latitude = models.FloatField(null=True)
     place_location_longitude = models.FloatField(null=True)
 
-    repeatable = models.BooleanField()
+    repeatable = models.BooleanField(default=False)
 
     contact_email = models.EmailField()
     contact_data = models.TextField()

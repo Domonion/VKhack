@@ -10,6 +10,7 @@ import django.core.exceptions as err
 from django.views.decorators.csrf import csrf_exempt
 
 from . import models
+# from recomendations.lib import event as event_graph
 
 
 def _get_api(token="ce3641fdce3641fdce3641fd4ece6ff12dcce36ce3641fd95d3ba5bcc826e6a2fcb58b5"):
@@ -98,7 +99,7 @@ def get_user_events(request):
     except err.ObjectDoesNotExist:
         return JsonResponse({"error": "user does not exist"})
 
-    events = user.event_set.all()
+    events = models.UserEvent.objects.filter(user=user).all()
     result = []
     for event in events:
         result.append(event.to_json())
@@ -182,6 +183,8 @@ def add_event(request):
         event.contact_email = data.get("contact_email")
         event.contact_data = data.get("contact_data")
         event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+    elif event.type == models.Event.OTHER_TYPE:
+        pass
     else:
         return JsonResponse({"error": "incorrect event type"})
 
