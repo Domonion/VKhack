@@ -80,11 +80,11 @@ class EventHandler:
         for subcat in subcat2dist:
             dj_graph.append(MergedGraphVertex('subcategory', subcat))
         for item in list(models.Event.objects.all()):
-            if item.start_datetime > now:
+            if item.start_datetime is None or item.start_datetime > now:
                 dj_graph.append(MergedGraphVertex('event', item))
 
         for item in list(models.EventSubcategories.objects.all()):
-            if item.event.start_datetime > now:
+            if item.event.start_datetime is None or item.event.start_datetime > now:
                 subcat2events[item.subcategory].add(item.event)
 
         for i, v in enumerate(dj_graph):
@@ -131,7 +131,8 @@ class EventHandler:
 
         now = datetime.datetime.now(datetime.timezone.utc)
         old_events = [item.event for item in list(models.UserEvents.objects.filter(user=user))
-                      if item.event.finish_datetime < now and not item.event.repeatable]
+                      if item.event.finish_datetime is not None and
+                      item.event.finish_datetime < now and not item.event.repeatable]
         old_events = sorted(old_events, key=lambda t: t.finish_time)
         queries = [[old_event, event, self.eval_time_delta(old_event, event)] for old_event in old_events]
 
