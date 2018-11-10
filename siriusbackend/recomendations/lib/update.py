@@ -3,15 +3,17 @@ import time
 
 
 def update_graph_set(graph, queries):
+    if not queries:
+        return graph
+
     for tpl in queries:
         graph[tpl[0]][tpl[1]] += tpl[2]
         graph[tpl[1]][tpl[0]] += tpl[2]
-    res = graph
     for k in graph:
         for i in graph:
             for j in graph:
-                res[i][j] = min(res[i][j], res[i][k] + res[k][j])
-    return res
+                graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j])
+    return graph
 
 
 def update_graph_add(event_graph, new_events_id):
@@ -21,6 +23,7 @@ def update_graph_add(event_graph, new_events_id):
             event_graph[old_event_id][new_event_id] = files_to_graph.INFINITY
             tmp_dist[old_event_id] = files_to_graph.INFINITY
         event_graph[new_event_id] = tmp_dist
+    return event_graph
 
 
 def update_graph(graph_file_path, queries_file_path, update_func):
@@ -36,6 +39,11 @@ def update_graph(graph_file_path, queries_file_path, update_func):
 class Updater:
     period = 30  # seconds
     need_stop = False
+
+    def do_once(self):
+        update_graph(files_to_graph.EVENT_GRAPH, files_to_graph.EVENT_ADD_QUERIES, update_graph_add)
+        update_graph(files_to_graph.EVENT_GRAPH, files_to_graph.EVENT_SET_QUERIES, update_graph_set)
+        update_graph(files_to_graph.SUBCATEGORY_GRAPH, files_to_graph.SUBCATEGORY_QUERIES, update_graph_set)
 
     def do(self):
         while not self.need_stop:
