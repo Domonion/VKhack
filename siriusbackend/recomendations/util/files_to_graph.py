@@ -10,7 +10,7 @@ HOME = os.environ['HOME']
 GRAPH_DIR = 'data'
 USER_DIR = 'users'
 
-USER_SUBCATEGORIES_DIR = os.path.join(GRAPH_DIR, USER_DIR)
+USER_SUBCATEGORIES_DIR = os.path.join(HOME, GRAPH_DIR, USER_DIR)
 
 SUBCATEGORY_GRAPH_FILE = 'subcategories_graph.json'
 EVENT_GRAPH_FILE = 'events_graph.json'
