@@ -1,4 +1,5 @@
 import json
+import uuid
 
 import vk
 import dateutil.parser as datetimeparser
@@ -6,6 +7,7 @@ import dateutil.parser as datetimeparser
 from django.shortcuts import render
 from django.http.response import JsonResponse
 import django.core.exceptions as err
+from django.views.decorators.csrf import csrf_exempt
 
 from . import models
 
@@ -100,9 +102,10 @@ def get_user_events(request):
     return JsonResponse(result)
 
 
+@csrf_exempt
 def register_user(request):
     data = json.loads(request.body)
-    user = models.User(vk_id=int(data["vk_id"]))
+    user = models.User(vk_id=int(data["vk_id"]), subcategories_file=str(uuid.uuid4()))
     user.save()
 
     interests = data["interests"]
@@ -123,9 +126,10 @@ def register_user(request):
         user_event = models.UserEvent(user=user, event_id=event)
         user_event.save()
 
-    return JsonResponse("ok")
+    return JsonResponse("ok", safe=False)
 
 
+@csrf_exempt
 def add_event(request):
     data = json.loads(request.body)
     event = models.Event(owner=models.User.objects.get(id=int(data["id"])),
@@ -190,3 +194,17 @@ def get_organizer_info(request):
     result = organizer.to_json()
     result["events"] = list([x.to_json(False) for x in models.Event.objects.filter(organizer=organizer).all()])
     return JsonResponse(result)
+
+
+def get_event_info(request):
+    event_id = request.GET.get("id")
+    if event_id is None:
+        return JsonResponse({"error": "id must be specified"})
+
+    event = models.Event.objects.get(id=int(event_id))
+    return JsonResponse(event.to_json())
+
+#
+# def get_events(request):
+#     query_string = request.GET.get("q")
+#     return []

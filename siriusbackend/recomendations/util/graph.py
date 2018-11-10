@@ -11,6 +11,7 @@ SUBCATEGORY_GRAPH_FILE = 'subcategories_graph.json'
 EVENT_GRAPH_FILE = 'events_graph.json'
 SUBCATEGORY_GRAPH = os.path.join(HOME, GRAPH_DIR, SUBCATEGORY_GRAPH_FILE)
 EVENT_GRAPH = os.path.join(HOME, GRAPH_DIR, EVENT_GRAPH_FILE)
+USER_SUBCATEGORIES_EDGES = os.path.join(HOME, GRAPH_DIR)
 
 
 def read_file(file_path):
@@ -50,6 +51,21 @@ def init_subcategories_graph(file_path):
             graph[src_subcat][dst_subcat] = INFINITY if i != j else 0
 
     write_graph(file_path, graph)
+
+
+def init_edges_from_user_to_subcategories(file_path):
+    categories = models.Subcategories.objects.all()
+    size = max([x.id for x in categories]) + 1
+    with open(os.path.join(USER_SUBCATEGORIES_EDGES, file_path), "wb") as file:
+        file.write(json.dumps([INFINITY] * size))
+
+
+def get_edges_to_subcategories(user):
+    filename = user.subcategories_file
+    with open(os.path.join(USER_SUBCATEGORIES_EDGES, filename), "rb") as file:
+        array = json.loads(file.read())
+    return {subcategory.name: array[i] for subcategory, i in zip(models.Subcategories.objects.order_by("id").all(),
+                                                                 range(models.Subcategories.objects.count()))}
 
 
 def update_graph(graph_file_path, queries_file_path, update_func):

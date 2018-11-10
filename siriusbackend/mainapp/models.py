@@ -5,6 +5,7 @@ class User(models.Model):
     vk_id = models.BigIntegerField(db_index=True, primary_key=True)
     banned = models.BooleanField(default=False)
     spent_time = models.FloatField(default=0.0)
+    subcategories_file = models.CharField(max_length=1024)
 
     def to_json(self):
         return {"vk_id": self.vk_id,
@@ -117,6 +118,8 @@ class Event(models.Model):
 
     contact_email = models.EmailField()
     contact_data = models.TextField()
+
+    is_verified = models.BooleanField(default=False)
 
     organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
 
