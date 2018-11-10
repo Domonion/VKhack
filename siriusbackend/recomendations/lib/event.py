@@ -1,5 +1,4 @@
-from recomendations import util
-from recomendations.util import graph
+from recomendations.util import files_to_graph
 
 from mainapp import models
 from mainapp.models import *
@@ -8,14 +7,24 @@ import datetime
 
 
 class EventHandler:
-    event_graph = graph.read_graph(graph.EVENT_GRAPH)
-    subcategory_graph = graph.read_graph(graph.SUBCATEGORY_GRAPH)
-    categories = models.get_all_subcategories()
+
+    def __init__(self, event_graph_path, subcategory_graph_path, event_add_queries_path,
+                 event_set_queries_path, subcategory_queries_path):
+
+        self.event_add_queries_path = event_add_queries_path
+        self.event_set_queries_path = event_set_queries_path
+        self.subcategory_queries_path = subcategory_queries_path
+        self.event_graph_path = event_graph_path
+        self.subcategory_graph_path = subcategory_graph_path
+
+        self.event_graph = files_to_graph.read_graph(event_graph_path)
+        self.subcategory_graph = files_to_graph.read_graph(subcategory_graph_path)
+        self.categories = models.get_all_subcategories()
 
     def get_all_sorted_events(self, user_id):
 
         class MergedGraphVertex:
-            def __init__(self, vertex_type, obj, dist = graph.INFINITY ** 2):
+            def __init__(self, vertex_type, obj, dist=graph.INFINITY ** 2):
                 self.type = vertex_type
                 self.obj = obj
                 self.distance = dist
@@ -26,11 +35,11 @@ class EventHandler:
 
         def dj(vert):
             for it in range(len(vert)):
-                mindist = graph.INFINITY ** 2
+                min_dist = files_to_graph.INFINITY ** 2
                 index = -1
                 for i, vertex in enumerate(vert):
-                    if not vertex.used and vertex.distance < mindist:
-                        mindist = vertex.distance
+                    if not vertex.used and vertex.distance < min_dist:
+                        min_dist = vertex.distance
                         index = i
                 if index == -1:
                     break
@@ -48,7 +57,7 @@ class EventHandler:
 
         cat2dist = dict()
         cat2subcats = self.categories
-        subcat2dist = dict()  # get from user
+        subcat2dist = files_to_graph.get_edges_to_subcategories()
         subcat2events = dict()
 
         for cat in cat2subcats:
@@ -66,11 +75,11 @@ class EventHandler:
         for item in list(models.Event.objects.all()):
             if item.start_datetime > now:
                 dj_graph.append(MergedGraphVertex('event', item))
-                
+
         for item in list(models.EventSubcategories.objects.all()):
             if item.event.start_datetime > now:
                 subcat2events[item.subcategory].add(item.event)
-        
+
         for i, v in enumerate(dj_graph):
             for j, u in enumerate(dj_graph):
                 if v.type == 'subcategory' and u.type == 'event':
@@ -81,7 +90,16 @@ class EventHandler:
                 if v.type == 'category' and u.type == 'subcategory':  # category->subcategory edges
                     v.edges.append((j, subcat2dist[u.obj]))
                 if v.type == 'event' and u.type == 'event':  # event->event edges
-                    v.edges.append((j, calc_event_edge(self.event_graph[v.obj][u.obj])))
+                    v.edges.append((j, calc_event_edge(self.event_graph[v.obj.id][u.obj.id])))
 
         return dj(dj_graph)
 
+    def add_event_add_query(self, event):
+        files_to_graph.add_query(self.event_add_queries_path, event)
+
+    def add_event_set_query(self, event):
+        files_to_graph.add_query(self.event_set_queries_path, event)
+
+    def add_subcategory_query(self, first_subcat, second_subcat, delta):
+        query = [first_subcat, second_subcat, delta]
+        files_to_graph.add_query(self.subcategory_queries_path, query)
