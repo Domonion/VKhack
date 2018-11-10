@@ -1,4 +1,5 @@
 import json
+import uuid
 
 import vk
 import dateutil.parser as datetimeparser
@@ -102,7 +103,7 @@ def get_user_events(request):
 
 def register_user(request):
     data = json.loads(request.body)
-    user = models.User(vk_id=int(data["vk_id"]))
+    user = models.User(vk_id=int(data["vk_id"]), subcategories_file=str(uuid.uuid4()))
     user.save()
 
     interests = data["interests"]

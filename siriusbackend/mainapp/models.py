@@ -5,6 +5,7 @@ class User(models.Model):
     vk_id = models.BigIntegerField(db_index=True, primary_key=True)
     banned = models.BooleanField(default=False)
     spent_time = models.FloatField(default=0.0)
+    subcategories_file = models.CharField(max_length=1024)
 
     def to_json(self):
         return {"vk_id": self.vk_id,
