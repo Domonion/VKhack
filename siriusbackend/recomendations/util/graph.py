@@ -23,8 +23,8 @@ def read_file(file_path):
 def write_graph(file_path, graph):
     with FileLock(file_path):
         file = open(file_path, 'w')
-    json.dumps(graph, separators=(',', ':'))
-    file.close()
+        file.write(json.dumps(graph, separators=(',', ':')))
+        file.close()
 
 
 def clear_file(file_path):
