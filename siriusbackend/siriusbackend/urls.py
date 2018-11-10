@@ -25,6 +25,7 @@ urlpatterns = [
     path('get_user_info/', mainapp.views.get_user_info),
     path('get_user_interests/', mainapp.views.get_user_interests),
     path('get_user_events/', mainapp.views.get_user_events),
+    path('get_organizer_info/', mainapp.views.get_organizer_info),
 
     path("register/", mainapp.views.register_user),
 

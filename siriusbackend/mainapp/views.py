@@ -179,3 +179,13 @@ def add_event(request):
 
     event.save()
     return JsonResponse({"id": event.id})
+
+
+def get_organizer_info(request):
+    full_name = request.GET.get("full_name")
+    if full_name is None:
+        return JsonResponse({"error": "No such organizer"})
+    organizer = models.Organizer.objects.get(full_name=full_name)
+    result = organizer.to_json()
+    result["events"] = list([x.to_json(False) for x in models.Event.objects.filter(organizer=organizer).all()])
+    return JsonResponse(result)
