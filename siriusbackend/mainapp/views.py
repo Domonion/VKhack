@@ -266,4 +266,4 @@ def subscribe(request):
         return kek.to_json()
 
     user_event.delete()
-    return models.Event.objects.get(id=event_id).to_json()
+    return JsonResponse(models.Event.objects.get(id=event_id).to_json())
