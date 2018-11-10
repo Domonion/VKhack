@@ -126,7 +126,7 @@ class Event(models.Model):
                 return x[1]
         raise RuntimeError("Type not found")
 
-    def to_json(self):
+    def to_json(self, org=True):
         result = {
             "name": self.name,
             "type": self.get_type_name(),
@@ -148,7 +148,8 @@ class Event(models.Model):
             "contact_data": self.contact_data
         })
 
-        result["organizer"] = self.organizer.to_json()
+        if org:
+            result["organizer"] = self.organizer.to_json()
 
         return result
 

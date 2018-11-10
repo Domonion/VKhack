@@ -1,6 +1,7 @@
 import json
 
 import vk
+import dateutil.parser as datetimeparser
 
 from django.shortcuts import render
 from django.http.response import JsonResponse
@@ -20,6 +21,9 @@ def get_all_categories(responce):
 
 
 def get_user_info(request):
+    """
+        if error
+    """
     # token = request.GET.get("token", None)
     # if token is None:
     #     return JsonResponse({"error": "token is None"})
@@ -30,7 +34,7 @@ def get_user_info(request):
     user_id = int(request.GET.get("id"))
 
     try:
-        user = models.User.objects.get(id=user_id)
+        user = models.User.objects.get(vk_id=user_id)
     except err.ObjectDoesNotExist:
         return JsonResponse({"error": "user does not exist"})
 
@@ -44,7 +48,7 @@ def get_user_info(request):
         user_json["interests"].append(interest.to_json())
 
     user_json["achievements"] = []
-    for achievement in user.userachievement_set:
+    for achievement in user.userachievement_set.all():
         user_json["achievements"].append(achievement.to_json())
 
     user_json["rank"] = 0
@@ -103,9 +107,10 @@ def register_user(request):
 
     interests = data["interests"]
     for interest in interests:
-        if isinstance(interest, list):
-            category = models.Category.objects.get(name=interest[0])
-            subcategory = models.Subcategory.objects.get(name=interest[1])
+        if "/" in interest:
+            x = interest.split("/")
+            category = models.Category.objects.get(name=x[0])
+            subcategory = models.Subcategory.objects.get(name=x[1])
         else:
             category = models.Category.objects.get(name=interest)
             subcategory = None
@@ -119,3 +124,69 @@ def register_user(request):
         user_event.save()
 
     return JsonResponse("ok")
+
+
+def add_event(request):
+    data = json.loads(request.body)
+    event = models.Event(owner=models.User.objects.get(id=int(data["id"])),
+                         name=data["name"],
+                         type=int(data["type"]),
+                         description=data["description"])
+
+    if event.type == models.Event.SCHOOL_TYPE:
+        event.start_datetime = datetimeparser.parse(data["start_datetime"])
+        event.finish_datetime = datetimeparser.parse(data["finish_datetime"])
+        event.contact_email = data["contact_email"]
+        event.contact_data = data.get("contact_data")
+        event.place_address = data["place_address"]
+        event.organizer = models.Organizer.objects.get(full_name=data["organizer"])
+
+    elif event.type == models.Event.CIRCLE_TYPE:
+        event.week_day = int(data["week_day"])
+        event.start_datetime = datetimeparser.parse(data["start_datetime"])
+        event.finish_datetime = datetimeparser.parse(data["finish_datetime"])
+        if data.get("contact_email") is not None:
+            event.contact_email = data.get("contact_email")
+        if data.get("contact_data") is not None:
+            event.contact_data = data.get("contact_data")
+        event.repeatable = True
+        if data.get("place_address") is not None:
+            event.place_address = data.get("place_address")
+        if data.get("organizer") is not None:
+            event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+
+    elif event.type == models.Event.SINGLE_TIME_TYPE:
+        event.place_address = data["place_address"]
+        event.start_datetime = datetimeparser.parse(data["start_datetime"])
+        event.finish_datetime = datetimeparser.parse(data["finish_datetime"])
+        if data.get("organizer") is not None:
+            event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+        if data.get("contact_email") is not None:
+            event.contact_email = data.get("contact_email")
+        if data.get("contact_data") is not None:
+            event.contact_data = data.get("contact_data")
+
+    elif event.type == models.Event.OTHER_TYPE:
+        event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
+        event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
+        event.week_day = data.get("week_day")
+        event.place_address = data.get("place_address")
+        event.repeatable = data.get("repeatable")
+        event.contact_email = data.get("contact_email")
+        event.contact_data = data.get("contact_data")
+        event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+    else:
+        return JsonResponse({"error": "incorrect event type"})
+
+    event.save()
+    return JsonResponse({"id": event.id})
+
+
+def get_organizer_info(request):
+    full_name = request.GET.get("full_name")
+    if full_name is None:
+        return JsonResponse({"error": "No such organizer"})
+    organizer = models.Organizer.objects.get(full_name=full_name)
+    result = organizer.to_json()
+    result["events"] = list([x.to_json(False) for x in models.Event.objects.filter(organizer=organizer).all()])
+    return JsonResponse(result)
