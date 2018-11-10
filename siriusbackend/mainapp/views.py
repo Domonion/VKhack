@@ -44,6 +44,7 @@ def get_user_info(request):
 
     user_json["first_name"] = api.users.get()[0]["first_name"]
     user_json["last_name"] = api.users.get()[0]["last_name"]
+    user_json["picture"] = api.users.get()[0]["photo_200"]
 
     user_json["interests"] = []
     for interest in user.userinterests_set.all():

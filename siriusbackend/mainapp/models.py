@@ -175,6 +175,14 @@ class EventSubcategories(models.Model):
     subcategory = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+    mark = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    text = models.TextField()
+
+
 def get_all_subcategories():
     result = dict()
     for item in list(Category.objects.all()):
