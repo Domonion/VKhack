@@ -211,3 +211,23 @@ def get_event_info(request):
 # def get_events(request):
 #     query_string = request.GET.get("q")
 #     return []
+
+
+@csrf_exempt
+def add_review(request):
+    data = json.loads(request.body)
+
+    user_vk_id = data.get("user_id")
+    event_id = data.get("event_id")
+    mark = data.get("mark")
+    text = data.get("text", "")
+
+    if user_vk_id is None or event_id is None or mark is None:
+        return JsonResponse({"error": "user_vk_id, event_id and mark must be specified"})
+
+    review = models.Review(user=models.User.objects.get(vk_id=user_vk_id),
+                           event_id=event_id,
+                           mark=int(mark),
+                           text=text)
+    review.save()
+    return JsonResponse({"id": review.id})

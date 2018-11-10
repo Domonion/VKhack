@@ -154,6 +154,7 @@ class Event(models.Model):
             "name": self.name,
             "type": self.get_type_name(),
             "description": self.description,
+            "id": self.id,
         }
 
         if self.start_datetime is not None:
