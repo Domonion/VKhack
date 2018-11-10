@@ -84,7 +84,7 @@ def init_subcategories_graph(file_path):
 def init_edges_from_user_to_subcategories(file_path):
     subcategories = models.Subcategory.objects.all()
     with open(os.path.join(USER_SUBCATEGORIES_DIR, file_path), "w") as file:
-        result = {x: INFINITY for x in subcategories}
+        result = {x.name: INFINITY for x in subcategories}
         file.write(json.dumps(result))
 
 
