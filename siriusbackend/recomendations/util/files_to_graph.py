@@ -42,6 +42,14 @@ def add_query(file_path, query):
     write_file(file_path, queries)
 
 
+def add_queries(file_path, queries):
+    old_queries = read_file(file_path)
+    if not old_queries:
+        old_queries = list()
+    old_queries.extend(queries)
+    write_file(file_path, old_queries)
+
+
 def clear_file(file_path):
     with FileLock(file_path):
         open(file_path, 'w').close()

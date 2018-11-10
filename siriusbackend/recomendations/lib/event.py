@@ -21,6 +21,9 @@ class EventHandler:
         self.subcategory_graph = files_to_graph.read_graph(subcategory_graph_path)
         self.categories = models.get_all_subcategories()
 
+        self.subcategories_delta = -5
+        self.subcategories_dec = -1
+
     def get_all_sorted_events(self, user_id):
 
         class MergedGraphVertex:
@@ -103,3 +106,26 @@ class EventHandler:
     def add_subcategory_query(self, first_subcat, second_subcat, delta):
         query = [first_subcat, second_subcat, delta]
         files_to_graph.add_query(self.subcategory_queries_path, query)
+
+    def add_subcategory_queries(self, queries):
+        files_to_graph.add_queries(self.subcategory_queries_path, queries)
+
+    def process_event(self, event, weight):
+        subcats = list(models.EventSubcategories.objects.filter(event=event))
+        queries = list()
+
+        for from_subcat in subcats:
+            for to_subcat in subcats:
+                if from_subcat != to_subcat:
+                    queries.append([from_subcat, to_subcat, weight])
+
+        self.add_subcategory_queries(queries)
+
+    def subscribe(self, event):
+        self.process_event(event, self.subcategories_dec)
+
+    def unsubscribe(self, event):
+        self.process_event(event, -self.subcategories_dec)
+
+    def visit(self, event):
+        self.process_event(event, self.subcategories_delta)
