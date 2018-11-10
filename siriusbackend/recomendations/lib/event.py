@@ -55,7 +55,7 @@ class EventHandler:
                 for edge in vert[index].edges:
                     to = edge[0]
                     weight = edge[1]
-                    vert[to].distance = min(vert[to].distance, vert[index] + weight)
+                    vert[to].distance = min(vert[to].distance, vert[index].distance + weight)
 
             result = [vertex.obj for vertex in vert if vertex.type == 'event']
             return sorted(result, key=lambda t: t.distance)
