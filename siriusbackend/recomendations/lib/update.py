@@ -18,11 +18,12 @@ def update_graph_set(graph, queries):
 
 def update_graph_add(event_graph, new_events_id):
     for new_event_id in new_events_id:
-        tmp_dist = dict()
+        tmp_dict = dict()
         for old_event_id in event_graph:
             event_graph[old_event_id][new_event_id] = files_to_graph.INFINITY
-            tmp_dist[old_event_id] = files_to_graph.INFINITY
-        event_graph[new_event_id] = tmp_dist
+            tmp_dict[old_event_id] = files_to_graph.INFINITY
+        tmp_dict[new_event_id] = 0
+        event_graph[new_event_id] = tmp_dict
     return event_graph
 
 

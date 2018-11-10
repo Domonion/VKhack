@@ -72,7 +72,7 @@ def init_subcategories_graph(file_path):
 
     subcats = list()
     for cat in categories:
-        for subcat in cat:
+        for subcat in categories[cat]:
             subcats.append(subcat)
 
     graph = dict()
