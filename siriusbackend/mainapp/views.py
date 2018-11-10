@@ -98,7 +98,7 @@ def get_user_events(request):
     except err.ObjectDoesNotExist:
         return JsonResponse({"error": "user does not exist"})
 
-    events = user.userinterests_set.all()
+    events = user.event_set.all()
     result = []
     for event in events:
         result.append(event.to_json())
