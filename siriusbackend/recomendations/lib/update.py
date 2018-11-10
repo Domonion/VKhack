@@ -1,13 +1,3 @@
-
-from siriusbackend.recomendations import util
-from siriusbackend.recomendations.util import graph
-
-from siriusbackend.mainapp import models
-from siriusbackend.mainapp.models import *
-
-#graph - dict dict int
-#queris - list, 3 int
-
 def update_func(graph, queries):
     for tpl in queries:
         graph[tpl[0]][tpl[1]] += tpl[2]
