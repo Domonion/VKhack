@@ -170,9 +170,12 @@ def add_event(request):
         event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
 
     elif event.type == models.Event.CIRCLE_TYPE:
-        event.week_day = int(data.get("week_day"))
-        event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
-        event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
+        event.week_day = int(data.get("week_day", 0))
+        try:
+            event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
+            event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
+        except Exception:
+            pass
         if data.get("contact_email") is not None:
             event.contact_email = data.get("contact_email")
         if data.get("contact_data") is not None:
