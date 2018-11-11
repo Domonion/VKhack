@@ -156,7 +156,7 @@ def add_event(request):
     if foo == -1:
         return JsonResponse({"error": "вы проиграли"})
 
-    event = models.Event(owner=models.User.objects.get(id=int(data["id"])),
+    event = models.Event(owner=models.User.objects.get(vk_id=int(data["user_id"])),
                          name=data["name"],
                          type=foo,
                          description=data["description"])
