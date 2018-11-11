@@ -7,6 +7,7 @@ from mainapp import models
 
 import datetime
 
+
 class EventHandler:
 
     def __init__(self, event_graph_path, subcategory_graph_path, event_add_queries_path,
@@ -148,6 +149,7 @@ class EventHandler:
 
     def visit(self, user, event):
         self.process_event(user, event, self.subcategories_delta)
+
 
 event_handler = EventHandler(files_to_graph.EVENT_GRAPH,
                              files_to_graph.SUBCATEGORY_GRAPH,
