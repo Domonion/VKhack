@@ -197,7 +197,7 @@ def add_event(request):
             pass
 
     elif event.type == models.Event.SINGLE_TIME_TYPE:
-        event.place_address = data("place_address")
+        event.place_address = data.get("place_address")
         try:
             event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
             event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
