@@ -26,7 +26,7 @@ class EventHandler:
         self.subcategories_dec = -1
 
     def eval_time_delta(self, old_event, new_event):
-        return -(new_event.finish_time - old_event.finish_time).days()
+        return -(new_event.finish_datetime - old_event.finish_datetime).days()
 
     def get_all_sorted_events(self, user_id):
 
@@ -130,14 +130,15 @@ class EventHandler:
 
         self.add_subcategory_queries(queries)
 
-        now = datetime.datetime.now(datetime.timezone.utc)
-        old_events = [item.event for item in list(models.UserEvent.objects.filter(user=user))
-                      if item.event.finish_datetime is not None and
-                      item.event.finish_datetime < now and not item.event.repeatable]
-        old_events = sorted(old_events, key=lambda t: t.finish_time)
-        queries = [[old_event.id, event.id, self.eval_time_delta(old_event, event)] for old_event in old_events]
+        if event.finish_datetime is not None and event.start_datetime is not None:
+            now = datetime.datetime.now(datetime.timezone.utc)
+            old_events = [item.event for item in list(models.UserEvent.objects.filter(user=user))
+                          if item.event.finish_datetime is not None and
+                          item.event.finish_datetime < now and not item.event.repeatable]
+            old_events = sorted(old_events, key=lambda t: t.finish_datetime)
+            queries = [[old_event.id, event.id, self.eval_time_delta(old_event, event)] for old_event in old_events]
 
-        self.add_event_set_queries(queries)
+            self.add_event_set_queries(queries)
 
     def subscribe(self, user, event):
         self.process_event(user, event, self.subcategories_dec)

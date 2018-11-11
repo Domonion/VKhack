@@ -143,7 +143,7 @@ def add_event(request):
     data = json.loads(request.body)
 
     kek = data["type"]
-    
+
     foo = -1
     for i, lol in enumerate(models.Event.TYPES):
         if lol[1] == kek:
@@ -201,11 +201,13 @@ def add_event(request):
         event.contact_data = data.get("contact_data")
         event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
     elif event.type == models.Event.OTHER_TYPE:
-        pass
+        return JsonResponse({"error": "users not allowed to add online-courses"})
     else:
         return JsonResponse({"error": "incorrect event type"})
 
     event.save()
+    event_handler.add_event_add_query(event)
+
     return JsonResponse({"id": event.id})
 
 
@@ -235,7 +237,7 @@ def get_events(request):
         return JsonResponse({"error": "kek"})
 
     events = event_handler.get_all_sorted_events(user_id)
-    return JsonResponse([event.to_json() for event in events])
+    return JsonResponse([event.to_json() for event in events], safe=False)
 
 
 @csrf_exempt
@@ -268,7 +270,7 @@ def get_event_by_id(request):
     try:
         user_event = models.UserEvent.objects.get(user_id=vk_id, event_id=event_id)
     except err.ObjectDoesNotExist:
-        return JsonResponse({"error": "Object Does Not Exist"})
+        return JsonResponse(models.Event.objects.get(id=event_id).to_json())
 
     return JsonResponse(user_event.to_json())
 
@@ -285,7 +287,11 @@ def subscribe(request):
     except err.ObjectDoesNotExist:
         kek = models.UserEvent(user=models.User.objects.get(vk_id=vk_id), event_id=event_id)
         kek.save()
+        event_handler.subscribe(user=models.User.objects.get(vk_id=vk_id),
+                                event=models.Event.objects.get(id=event_id))
         return JsonResponse(kek.to_json())
 
+    event_handler.unsubscribe(user=models.User.objects.get(vk_id=vk_id),
+                              event=models.Event.objects.get(id=event_id))
     user_event.delete()
     return JsonResponse(models.Event.objects.get(id=event_id).to_json())
