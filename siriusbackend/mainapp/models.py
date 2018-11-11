@@ -138,7 +138,7 @@ class Event(models.Model):
 
     is_verified = models.BooleanField(default=False)
 
-    organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE)
+    organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE, null=True, default=True)
 
     def __str__(self):
         return self.name
