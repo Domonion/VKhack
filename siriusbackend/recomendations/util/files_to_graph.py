@@ -30,13 +30,13 @@ EVENT_SET_QUERIES = os.path.join(HOME, GRAPH_DIR, EVENT_SET_QUERIES_FILE)
 def read_file(file_path):
     with FileLock(file_path):
         file = open(file_path, 'r')
-        try:
-            graph = json.loads(file.read())
-        except Exception:
-            graph = dict()
-        finally:
-            file.close()
-        return graph
+    try:
+        graph = json.loads(file.read())
+    except Exception:
+        graph = dict()
+    finally:
+        file.close()
+    return graph
 
 
 def write_file(file_path, item):
