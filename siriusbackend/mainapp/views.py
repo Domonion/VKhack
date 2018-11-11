@@ -4,6 +4,8 @@ import uuid
 import vk
 import dateutil.parser as datetimeparser
 
+import datetime
+
 from django.shortcuts import render
 from django.http.response import JsonResponse
 import django.core.exceptions as err
@@ -13,6 +15,7 @@ from . import models
 
 import sys
 import os
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from recomendations.lib.event import *
 
@@ -295,3 +298,7 @@ def subscribe(request):
                               event=models.Event.objects.get(id=event_id))
     user_event.delete()
     return JsonResponse(models.Event.objects.get(id=event_id).to_json())
+
+
+def rating(request):
+    return JsonResponse(models.User.objects.get(vk_id=58321509).to_json())
