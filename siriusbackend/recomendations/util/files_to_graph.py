@@ -41,7 +41,7 @@ def read_file(file_path):
 def write_file(file_path, item):
     with FileLock(file_path):
         file = open(file_path, 'w')
-        file.write(json.dumps(item.to_json(), separators=(',', ':')))
+        file.write(json.dumps(item, separators=(',', ':')))
         file.close()
 
 
