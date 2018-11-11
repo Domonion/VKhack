@@ -26,7 +26,7 @@ class EventHandler:
         self.subcategories_dec = -1
 
     def eval_time_delta(self, old_event, new_event):
-        return -1 if new_event.finish_datetime - old_event.finish_datetime <= datetime.datetime.day else 0
+        return -1 if (new_event.finish_datetime - old_event.finish_datetime).days == 0 else 0
 
     def get_all_sorted_events(self, user_id):
 
