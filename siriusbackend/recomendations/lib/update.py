@@ -67,13 +67,13 @@ updater = Updater()
 
 def _kek_target():
     while True:
-        # try:
-        current_alive_thread = threading.Thread(target=updater.do)
-        current_alive_thread.start()
-        current_alive_thread.join()
-        # except Exception:
-        #     pass
-        # time.sleep(1)
+        try:
+            current_alive_thread = threading.Thread(target=updater.do)
+            current_alive_thread.start()
+            current_alive_thread.join()
+        except Exception:
+            pass
+        time.sleep(1)
 
 
 _kek_thread = threading.Thread(target=updater.do)
