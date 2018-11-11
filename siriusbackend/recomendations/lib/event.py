@@ -126,16 +126,16 @@ class EventHandler:
         for from_subcat in subcats:
             for to_subcat in subcats:
                 if from_subcat != to_subcat:
-                    queries.append([from_subcat, to_subcat, weight])
+                    queries.append([from_subcat.name, to_subcat.name, weight])
 
         self.add_subcategory_queries(queries)
 
         now = datetime.datetime.now(datetime.timezone.utc)
-        old_events = [item.event for item in list(models.UserEvents.objects.filter(user=user))
+        old_events = [item.event for item in list(models.UserEvent.objects.filter(user=user))
                       if item.event.finish_datetime is not None and
                       item.event.finish_datetime < now and not item.event.repeatable]
         old_events = sorted(old_events, key=lambda t: t.finish_time)
-        queries = [[old_event, event, self.eval_time_delta(old_event, event)] for old_event in old_events]
+        queries = [[old_event.id, event.id, self.eval_time_delta(old_event, event)] for old_event in old_events]
 
         self.add_event_set_queries(queries)
 

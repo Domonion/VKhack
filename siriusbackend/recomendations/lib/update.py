@@ -16,8 +16,8 @@ def update_graph_set(graph, queries):
     return graph
 
 
-def update_graph_add(event_graph, new_events_id):
-    for new_event_id in new_events_id:
+def update_graph_add(event_graph, events_ids):
+    for new_event_id in events_ids:
         tmp_dict = dict()
         for old_event_id in event_graph:
             event_graph[old_event_id][new_event_id] = files_to_graph.INFINITY
