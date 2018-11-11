@@ -127,14 +127,14 @@ class Event(models.Model):
     finish_datetime = models.DateTimeField(null=True)
     week_day = models.PositiveSmallIntegerField(null=True)
 
-    place_address = models.TextField()
+    place_address = models.TextField(default="")
     place_location_latitude = models.FloatField(null=True)
     place_location_longitude = models.FloatField(null=True)
 
     repeatable = models.BooleanField(default=False)
 
-    contact_email = models.EmailField()
-    contact_data = models.TextField()
+    contact_email = models.EmailField(null=True)
+    contact_data = models.TextField(default="")
 
     is_verified = models.BooleanField(default=False)
 
