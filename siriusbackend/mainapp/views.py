@@ -203,7 +203,7 @@ def add_event(request):
         event.contact_email = data.get("contact_email")
         event.contact_data = data.get("contact_data")
         event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
-    elif event.type == models.Event.OTHER_TYPE:
+    elif event.type == models.Event.ONLINE_COURSE_TYPE:
         return JsonResponse({"error": "users not allowed to add online-courses"})
     else:
         return JsonResponse({"error": "incorrect event type"})
