@@ -167,7 +167,10 @@ def add_event(request):
         event.contact_email = data.get("contact_email")
         event.contact_data = data.get("contact_data")
         event.place_address = data.get("place_address")
-        event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+        try:
+            event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+        except Exception:
+            pass
 
     elif event.type == models.Event.CIRCLE_TYPE:
         event.week_day = int(data.get("week_day", 0))
@@ -183,15 +186,21 @@ def add_event(request):
         event.repeatable = True
         if data.get("place_address") is not None:
             event.place_address = data.get("place_address")
-        if data.get("organizer") is not None:
-            event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+        try:
+            if data.get("organizer") is not None:
+                event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+        except Exception:
+            pass
 
     elif event.type == models.Event.SINGLE_TIME_TYPE:
         event.place_address = data("place_address")
         event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
         event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
-        if data.get("organizer") is not None:
-            event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+        try:
+            if data.get("organizer") is not None:
+                event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+        except Exception:
+            pass
         if data.get("contact_email") is not None:
             event.contact_email = data.get("contact_email")
         if data.get("contact_data") is not None:
@@ -205,7 +214,10 @@ def add_event(request):
         event.repeatable = data.get("repeatable")
         event.contact_email = data.get("contact_email")
         event.contact_data = data.get("contact_data")
-        event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+        try:
+            event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
+        except Exception:
+            pass
     elif event.type == models.Event.ONLINE_COURSE_TYPE:
         return JsonResponse({"error": "users not allowed to add online-courses"})
     else:
