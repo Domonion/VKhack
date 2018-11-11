@@ -1,6 +1,6 @@
 import json
 import os
-from filelock import FileLock
+from filelock import Timeout, FileLock
 
 from mainapp import models
 
@@ -28,19 +28,18 @@ EVENT_SET_QUERIES = os.path.join(HOME, GRAPH_DIR, EVENT_SET_QUERIES_FILE)
 
 
 def read_file(file_path):
-    with FileLock(file_path):
-        file = open(file_path, 'r')
-        try:
-            graph = json.loads(file.read())
-        except Exception:
-            graph = dict()
-        finally:
-            file.close()
-        return graph
+    file = open(file_path, 'r')
+    try:
+        graph = json.loads(file.read())
+    except Exception:
+        graph = dict()
+    finally:
+        file.close()
+    return graph
 
 
 def write_file(file_path, item):
-    with FileLock(file_path):
+    with FileLock(file_path, timeout=1):
         file = open(file_path, 'w')
         file.write(json.dumps(item, separators=(',', ':')))
         file.close()
