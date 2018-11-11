@@ -28,7 +28,8 @@ EVENT_SET_QUERIES = os.path.join(HOME, GRAPH_DIR, EVENT_SET_QUERIES_FILE)
 
 
 def read_file(file_path):
-    file = open(file_path, 'r')
+    with FileLock(file_path):
+        file = open(file_path, 'r')
     try:
         graph = json.loads(file.read())
     except Exception:
