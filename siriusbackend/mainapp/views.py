@@ -77,7 +77,7 @@ def get_user_interests(request):
     user_id = int(request.GET.get("id"))
 
     try:
-        user = models.User.objects.get(id=user_id)
+        user = models.User.objects.get(vk_id=user_id)
     except err.ObjectDoesNotExist:
         return JsonResponse({"error": "user does not exist"})
 
