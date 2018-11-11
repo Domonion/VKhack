@@ -134,7 +134,7 @@ class EventHandler:
         old_events = [item.event for item in list(models.UserEvent.objects.filter(user=user))
                       if item.event.finish_datetime is not None and
                       item.event.finish_datetime < now and not item.event.repeatable]
-        old_events = sorted(old_events, key=lambda t: t.finish_time)
+        old_events = sorted(old_events, key=lambda t: t.finish_datetime)
         queries = [[old_event, event, self.eval_time_delta(old_event, event)] for old_event in old_events]
 
         self.add_event_set_queries(queries)
