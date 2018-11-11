@@ -270,7 +270,7 @@ def get_event_by_id(request):
     try:
         user_event = models.UserEvent.objects.get(user_id=vk_id, event_id=event_id)
     except err.ObjectDoesNotExist:
-        return JsonResponse({"error": "Object Does Not Exist"})
+        return JsonResponse(models.Event.objects.get(id=event_id).to_json())
 
     return JsonResponse(user_event.to_json())
 
