@@ -301,4 +301,8 @@ def subscribe(request):
 
 
 def rating(request):
-    return JsonResponse(models.User.objects.get(vk_id=58321509).to_json())
+    result = list()
+    users = list(models.User.objects.all().order_by("-vk_id"))
+    for user in users:
+        result.append(user.to_json())
+    return JsonResponse(json.dumps(result))
