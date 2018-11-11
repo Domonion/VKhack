@@ -4,6 +4,8 @@ import uuid
 import vk
 import dateutil.parser as datetimeparser
 
+import datetime
+
 from django.shortcuts import render
 from django.http.response import JsonResponse
 import django.core.exceptions as err
@@ -13,6 +15,7 @@ from . import models
 
 import sys
 import os
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from recomendations.lib.event import *
 
@@ -310,3 +313,10 @@ def add_review(request):
                            text=data.get("text"))
     review.save()
     return JsonResponse({"id": review.id})
+
+def rating(request):
+    result = list()
+    users = list(models.User.objects.all().order_by("-vk_id"))
+    for user in users:
+        result.append(user.to_json())
+    return JsonResponse(json.dumps(result))

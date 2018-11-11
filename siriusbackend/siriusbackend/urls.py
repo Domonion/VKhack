@@ -35,4 +35,5 @@ urlpatterns = [
 
     path("add_event/", mainapp.views.add_event),
     path("add_review/", mainapp.views.add_review),
+    path("add_rating/", mainapp.views.rating)
 ]
