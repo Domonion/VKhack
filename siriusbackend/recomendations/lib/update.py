@@ -65,7 +65,7 @@ class Updater:
 updater = Updater()
 
 
-def _kek_target():
+'''def _kek_target():
     while True:
         # try:
         current_alive_thread = threading.Thread(target=updater.do)
@@ -78,3 +78,4 @@ def _kek_target():
 
 _kek_thread = threading.Thread(target=updater.do)
 _kek_thread.start()
+'''
