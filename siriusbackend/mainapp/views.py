@@ -5,6 +5,7 @@ import vk
 import dateutil.parser as datetimeparser
 
 import datetime
+import time as tm
 
 from django.shortcuts import render
 from django.http.response import JsonResponse
@@ -224,6 +225,7 @@ def add_event(request):
         return JsonResponse({"error": "incorrect event type"})
 
     event.save()
+    tm.sleep(4)
     event_handler.add_event_add_query(event)
 
     return JsonResponse({"id": event.id})

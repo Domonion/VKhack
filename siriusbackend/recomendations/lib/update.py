@@ -40,7 +40,7 @@ def update_graph(graph_file_path, queries_file_path, update_func):
 
 
 class Updater:
-    period = 30  # seconds
+    period = 2  # seconds
     need_stop = False
 
     def do_once(self):
