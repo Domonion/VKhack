@@ -163,8 +163,11 @@ def add_event(request):
                          description=data["description"])
 
     if event.type == models.Event.SCHOOL_TYPE:
-        event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
-        event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
+        try:
+            event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
+            event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
+        except Exception:
+            pass
         event.contact_email = data.get("contact_email")
         event.contact_data = data.get("contact_data")
         event.place_address = data.get("place_address")
@@ -195,8 +198,11 @@ def add_event(request):
 
     elif event.type == models.Event.SINGLE_TIME_TYPE:
         event.place_address = data("place_address")
-        event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
-        event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
+        try:
+            event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
+            event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
+        except Exception:
+            pass
         try:
             if data.get("organizer") is not None:
                 event.organizer = models.Organizer.objects.get(full_name=data.get("organizer"))
@@ -208,8 +214,11 @@ def add_event(request):
             event.contact_data = data.get("contact_data")
 
     elif event.type == models.Event.OTHER_TYPE:
-        event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
-        event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
+        try:
+            event.start_datetime = datetimeparser.parse(data.get("start_datetime"))
+            event.finish_datetime = datetimeparser.parse(data.get("finish_datetime"))
+        except Exception:
+            pass
         event.week_day = data.get("week_day")
         event.place_address = data.get("place_address")
         event.repeatable = data.get("repeatable")
