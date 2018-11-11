@@ -295,3 +295,18 @@ def subscribe(request):
                               event=models.Event.objects.get(id=event_id))
     user_event.delete()
     return JsonResponse(models.Event.objects.get(id=event_id).to_json())
+
+
+@csrf_exempt
+def add_review(request):
+    data = json.loads(request.body)
+
+    if data.get("user_id") is None or data.get("event_id") is None or data.get("mark") is None:
+        JsonResponse({"error": "user_id, event_id, mark must be specified"})
+
+    review = models.Review(user=models.User.objects.get(vk_id=int(data["user_id"])),
+                           event_id=int(data["event_id"]),
+                           mark=int(data["mark"]),
+                           text=data.get("text"))
+    review.save()
+    return JsonResponse({"id": review.id})

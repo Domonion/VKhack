@@ -34,4 +34,5 @@ urlpatterns = [
     path("register/", mainapp.views.register_user),
 
     path("add_event/", mainapp.views.add_event),
+    path("add_review/", mainapp.views.add_review),
 ]
