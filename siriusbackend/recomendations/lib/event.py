@@ -123,10 +123,10 @@ class EventHandler:
         subcats = list(models.EventSubcategories.objects.filter(event=event))
         queries = list()
 
-        for from_subcat in subcats:
-            for to_subcat in subcats:
-                if from_subcat != to_subcat:
-                    queries.append([from_subcat.name, to_subcat.name, weight])
+        for from_item in subcats:
+            for to_item in subcats:
+                if from_item.subcategory != to_item.subcategory:
+                    queries.append([from_item.subcategory.name, to_item.subcategory.name, weight])
 
         self.add_subcategory_queries(queries)
 
