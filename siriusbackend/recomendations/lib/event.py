@@ -26,6 +26,10 @@ class EventHandler:
         self.subcategories_delta = -5
         self.subcategories_dec = -1
 
+    def reload(self):
+        self.event_graph = files_to_graph.read_file(self.event_graph_path)
+        self.subcategory_graph = files_to_graph.read_file(self.subcategory_graph_path)
+
     def eval_time_delta(self, old_event, new_event):
         return -1 if (new_event.finish_datetime - old_event.finish_datetime).days == 0 else 0
 

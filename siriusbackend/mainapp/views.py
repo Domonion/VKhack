@@ -234,8 +234,9 @@ def add_event(request):
         return JsonResponse({"error": "incorrect event type"})
 
     event.save()
-    tm.sleep(4)
     event_handler.add_event_add_query(event)
+    tm.sleep(5)
+    event_handler.reload()
 
     return JsonResponse({"id": event.id})
 
